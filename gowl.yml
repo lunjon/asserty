@@ -1,0 +1,28 @@
+default: test
+
+
+jobs:
+  clean:
+    description: Remove build artifacts, caches, etc.
+    script:
+      - >
+        find .
+        ( -name __pycache__ -o -name .pytest_cache )
+        -exec rm -r {} +
+      - rm -rf assert.egg-info build dist
+
+  test:
+    description: Run the unit tests for asserty
+    script:
+      - pytest -v asserty
+  
+  install:
+    description: Install the requirements to develop and publish
+    script:
+      - python3 -m pip install --user --upgrade -r requirements.txt
+      - python3 setup.py sdist bdist_wheel
+  
+  dist:
+    description: Create the distribution package
+    script:
+      - python3 setup.py sdist bdist_wheel

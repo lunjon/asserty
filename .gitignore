@@ -1,0 +1,8 @@
+
+# Build output
+__pycache__
+.pytest_cache
+build
+dist
+*.egg-info
+*.pyc
