@@ -9,7 +9,7 @@ jobs:
         find .
         ( -name __pycache__ -o -name .pytest_cache )
         -exec rm -r {} +
-      - rm -rf assert.egg-info build dist
+      - rm -rf asserty.egg-info build dist
 
   test:
     description: Run the unit tests for asserty
@@ -26,3 +26,15 @@ jobs:
     description: Create the distribution package
     script:
       - python3 setup.py sdist bdist_wheel
+  
+  publish:
+    description: REQUIRES USER/PASS PROMPT! Run 'gowl -c pub' to get the command
+    alias: pub
+    script:
+      - python3 -m twine upload dist/*
+  
+  publish_test:
+    description: REQUIRES USER/PASS PROMPT! Run 'gowl -c pub' to get the command
+    alias: pubtest
+    script:
+      - python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
