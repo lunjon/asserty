@@ -1,4 +1,4 @@
-from .asserts import assert_that
+from .that import assert_that
 
 
 def test_equals_str():
@@ -63,3 +63,45 @@ def test_has_type_on_str():
     assert_that("str").has_type("string")
     assert_that("str").not_has_type(int)
     assert_that("str").not_has_same_type_as(int)
+
+
+def test_also():
+    assert_that("str").equals("str").also.not_equals("string")
+
+
+def test_and_do():
+    assert_that("str").equals("str").and_do.not_equals("string")
+
+
+def test_is_in():
+    assert_that(1).is_in(range(10))
+    assert_that(10).is_not_in(range(10))
+    
+
+def test_greater():
+    assert_that(1).is_greater_than(0)
+    assert_that(1).is_greater_or_equal_to(0)
+    assert_that(1).is_greater_or_equal_to(1)
+    
+
+def test_less():
+    assert_that(1).is_less_than(2)
+    assert_that(1).is_less_or_equal_to(1)
+    assert_that(1).is_less_or_equal_to(2)
+
+
+def test_chained():
+    assert_that(5).is_in(range(10)).and_is.is_less_than(8)
+
+
+def test_readme_examples():
+    assert_that("str").not_equals("string")
+    assert_that(5).is_in(range(10)).also.is_less_than(8)
+
+    def myfunc(arg):
+        if not isinstance(arg, str):
+            raise TypeError()
+        return arg+"yay"
+
+    assert_that(myfunc).if_called_with(1).raises(TypeError)
+    assert_that(myfunc).if_called_with("Hey-").returns("Hey-yay")

@@ -1,3 +1,6 @@
+# Editors
+.idea
+.vscode
 
 # Build output
 __pycache__
@@ -6,3 +9,4 @@ build
 dist
 *.egg-info
 *.pyc
+

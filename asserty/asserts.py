@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from unittest import TestCase
 
 
@@ -29,6 +28,22 @@ def assert_not_equal(a, b):
     testcase_instance.assertNotEqual(a, b)
 
 
+def assert_greater_than(a, b):
+    testcase_instance.assertGreater(a, b)
+
+
+def assert_greater_equal_than(a, b):
+    testcase_instance.assertGreaterEqual(a, b)
+
+
+def assert_less_than(a, b):
+    testcase_instance.assertLess(a, b)
+
+
+def assert_less_equal_than(a, b):
+    testcase_instance.assertLessEqual(a, b)
+
+
 def assert_raises(err, func, *args, **kwargs):
     testcase_instance.assertRaises(err, func, *args, **kwargs)
 
@@ -41,17 +56,32 @@ def assert_not_type(obj, t):
     testcase_instance.assertNotIsInstance(obj, t)
 
 
+def assert_contains(coll, obj):
+    testcase_instance.assertIn(obj, coll)
+
+
+def assert_not_contains(coll, obj):
+    testcase_instance.assertNotIn(obj, coll)
+
+
 class Assert:
     def __init__(self, value):
         self.value = value
 
+    @property
     def also(self):
+        """Make further assertions on this with AND between them."""
         return self
 
+    and_do = also
+    and_is = also
+
     def is_none(self):
+        """Assert that this has a value of None."""
         assert_none(self.value)
 
     def is_not_none(self):
+        """Assert that this DO NOT has a value of None."""
         assert_not_none(self.value)
 
     def equals(self, other):
@@ -60,17 +90,12 @@ class Assert:
         return self
 
     def not_equals(self, other):
-        """Check that if this object is NOT equal to the other object."""
+        """Check that if this object DO NOT equal to the other object."""
         assert_not_equal(self.value, other)
         return self
 
-
     def has_type(self, expected):
-        """Assert that this type is the expected.
-
-        Args:
-            expected (type|object): the type or object to compare the type.
-        """
+        """Assert that this has the expected type."""
         if not isinstance(expected, type):
             expected = type(expected)
         assert_type(self.value, expected)
@@ -80,11 +105,7 @@ class Assert:
     is_instance = has_type
 
     def not_has_type(self, other):
-        """Assert that this type is the expected.
-
-        Args:
-            expected (type|object): the type or object to compare the type.
-        """
+        """Assert that this NOT have the expected type."""
         if not isinstance(other, type):
             other = type(other)
         assert_not_type(self.value, other)
@@ -93,119 +114,46 @@ class Assert:
     not_has_same_type_as = not_has_type
     not_is_instance = not_has_type
 
+    def is_in(self, coll):
+        """Assert that this is in the given collection."""
+        assert_contains(coll, self.value)
+        return self
 
-class AssertBool(Assert):
-    def __init__(self, value):
-        super().__init__(value)
-
-    def is_true(self):
-        assert_true(self.value)
-
-    def is_false(self):
-        assert_false(self.value)
-
-    is_not_true = is_false
-    is_not_false = is_true
-
-
-class AssertCollection(Assert):
-    def __init__(self, value):
-        super().__init__(value)
-        self.value = value
+    def is_not_in(self, coll):
+        """Assert that this is NOT in the given collection."""
+        assert_not_contains(coll, self.value)
+        return self
 
     def has_length(self, expected):
-        """Assert that the length of this object is of the expected value.
-
-        Args:
-            expected (int|obj): the expected length. It can be an integer or an object
-                that has the __len__ attribute.
-        """
+        """Assert that this is of the expected length"""
         if hasattr(expected, "__len__"):
             expected = len(expected)
         assert_equal(len(self.value), expected)
         return self
 
     def not_has_length(self, expected):
-        """Assert that the length of this object is NOT of the expected value.
-
-        Args:
-            expected (int|obj): the expected length. It can be an integer or an object
-                that has the __len__ attribute.
-        """
+        """Assert that this is NOT of the expected length"""
         if hasattr(expected, "__len__"):
             expected = len(expected)
         assert_not_equal(len(self.value), expected)
         return self
 
-
-class AssertCallable(Assert):
-    args = []
-    kwargs = {}
-
-    def __init__(self, func):
-        super().__init__(func)
-        self.func = func
-
-    @property
-    def when_called(self):
-        """Make assertion on a callable.
-        """
+    def is_greater_than(self, other):
+        """Assert that this is greater than other."""
+        assert_greater_than(self.value, other)
         return self
 
-    if_called = when_called
-
-    def when_called_with(self, *args, **kwargs):
-        """Make assertion on a callable with arguments.
-
-        Returns:
-            AssertCallable: A new asserter.
-        """
-        self.args = args
-        self.kwargs = kwargs
+    def is_greater_or_equal_to(self, other):
+        """Assert that this is greater than other."""
+        assert_greater_equal_than(self.value, other)
         return self
 
-    if_called_with = when_called_with
+    def is_less_than(self, other):
+        """Assert that this is greater than other."""
+        assert_less_than(self.value, other)
+        return self
 
-    def raises(self, err):
-        assert_raises(err, self.func, *self.args, **self.kwargs)
-
-    def returns(self, expected):
-        actual = self.func(*self.args, **self.kwargs)
-        assert_equal(actual, expected)
-
-
-def assert_that(obj):
-    """Returns a new object around the object to assert."""
-
-    if isinstance(obj, bool):
-        # A bool is an instance of int, hence the check
-        return AssertBool(obj)
-
-    elif (isinstance(obj, str) or
-        isinstance(obj, int) or
-        isinstance(obj, float)):
-        return Assert(obj)
-
-
-    elif callable(obj):
-        return AssertCallable(obj)
-
-    elif isinstance(obj, Iterable):
-        return AssertCollection(obj)
-
-    return Assert(obj)
-
-
-class expected_error:
-
-    def __init__(self, err_type):
-        if not isinstance(err_type, type):
-            self.err_type = type(err_type)
-        else:
-            self.err_type = err_type
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, type, value, traceback):
-        return isinstance(value, self.err_type)
+    def is_less_or_equal_to(self, other):
+        """Assert that this is greater than other."""
+        assert_less_equal_than(self.value, other)
+        return self

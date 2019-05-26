@@ -1,4 +1,4 @@
-from .asserts import assert_that
+from .that import assert_that
 
 
 def test_is_true():

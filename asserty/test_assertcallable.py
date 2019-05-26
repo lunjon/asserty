@@ -1,4 +1,4 @@
-from .asserts import assert_that
+from .that import assert_that
 
 
 def test_when_called_returns():
@@ -33,3 +33,12 @@ def test_when_called_with_raises():
     except AssertionError:
         pass
 
+
+def test_callable_example():
+    def myfunc(arg):
+        if not isinstance(arg, str):
+            raise TypeError()
+        return arg + "yay"
+
+    assert_that(myfunc).when_called_with(1).raises(TypeError)
+    assert_that(myfunc).if_called_with("Hey-").returns("Hey-yay")
