@@ -1,4 +1,4 @@
-from .that import assert_that
+from . import assert_that
 
 
 def test_equals_str():
@@ -17,25 +17,26 @@ def test_equals_float():
 
 
 def test_equals_with_same_class():
-    class tmp:
+    class Tmp:
         def __init__(self, var):
             self.var = var
-    t1 = tmp(1)
-    t2 = tmp(2)
+    t1 = Tmp(1)
+    t2 = Tmp(2)
     assert_that(t1).equals(t1)
     assert_that(t1).not_equals(t2)
 
 
 def test_equals_with_different_class():
-    class class1:
+    class Class1:
         def __init__(self, var):
             self.var = var
-    class class2:
+            
+    class Class2:
         def __init__(self, var):
             self.var = var
     
-    c1 = class1(1)
-    c2 = class2(2)
+    c1 = Class1(1)
+    c2 = Class2(2)
     assert assert_that(c1).not_equals(c2)
 
 

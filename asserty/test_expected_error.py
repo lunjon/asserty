@@ -1,4 +1,4 @@
-from .expected_error import expected_error
+from . import expected_error
 
 
 def test_expect_error():
