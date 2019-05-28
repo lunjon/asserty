@@ -356,6 +356,7 @@ class Assert:
         else:
             raise TypeError("cannot compare body with type {}".format(type(other_body)))
 
+        print(my_body)
         msg = "Expected body {} to equal {}".format(my_body, other_body)
         assert_equal(my_body, other_body, msg)
         return self

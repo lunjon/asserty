@@ -3,13 +3,17 @@ from requests import Response
 
 
 class MockResponse(Response):
-    def __init__(self, status_code: int, body: dict):
+    def __init__(self, status_code: int, body):
         super().__init__()
         self.status_code: int = status_code
-        self.body: dict = body
+        self.body = body
 
     def json(self) -> dict:
         return self.body
+    
+    @property
+    def text(self):
+        return str(self.body)
 
 
 def test_status():
@@ -25,6 +29,7 @@ def test_body():
     res = MockResponse(200, {"a": 1})
     assert_that(res).body_contains_key("a")
     assert_that(res).body_equals({"a": 1})
+    assert_that(res).body_equals("{'a': 1}")
 
 
 def test_status_and_body():
