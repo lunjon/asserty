@@ -91,6 +91,14 @@ def test_less():
     assert_that(1).is_less_or_equal_to(2)
 
 
+def test_has_attribute():
+    class MyClass:
+        name = "MyClass"
+    assert_that("str").has_attribute("__str__")
+    assert_that(MyClass()).has_attribute("name")
+    assert_that(MyClass()).has_attribute_with_value("name", "MyClass")
+
+
 def test_chained():
     assert_that(5).is_in(range(10)).and_is.is_less_than(8)
 

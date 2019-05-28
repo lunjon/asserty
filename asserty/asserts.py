@@ -171,6 +171,35 @@ class Assert:
         msg = "Expected {} to be less or equal to {}".format(self.value, other)
         assert_less_equal_than(self.value, other, msg)
         return self
+
+    def has_attribute(self, name):
+        """Assert that this has an attribute with the given name.
+        
+        Args:
+            name (str): the name of the attribute
+        """
+        msg = "Expected {} to have an attribute named {}".format(self.value, name)
+        try:
+            hasattr(self.value, name)
+        except AttributeError:
+            raise AssertionError(msg)
+        return self
+
+    def has_attribute_with_value(self, name, value):
+        """Assert that this has an attribute with the given name and
+        an optional value.
+        
+        Args:
+            name (str): the name of the attribute
+            value (str): the value of the attribute
+        """
+        msg = "Expected {} to have an attribute named {} with value {}".format(self.value, name, value)
+        try:
+            hasattr(self.value, name)
+        except AttributeError:
+            raise AssertionError(msg)
+        assert_equal(self.value.__getattribute__(name), value, msg = "Expected {} to have an attribute named {} with value {}".format(self.value, name, value))
+        return self
     
     # Bool Assertions
     
