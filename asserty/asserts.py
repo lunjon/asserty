@@ -1,67 +1,67 @@
 from unittest import TestCase
 
 
-testcase_instance = TestCase("__init__")
+tc = TestCase("__init__")
 
 
 def assert_true(obj, msg=""):
-    testcase_instance.assertTrue(obj, msg)
+    tc.assertTrue(obj, msg)
 
 
 def assert_false(obj, msg=""):
-    testcase_instance.assertFalse(obj, msg)
+    tc.assertFalse(obj, msg)
 
 
 def assert_none(obj, msg=""):
-    testcase_instance.assertIsNone(obj, msg)
+    tc.assertIsNone(obj, msg)
 
 
 def assert_not_none(obj, msg=""):
-    testcase_instance.assertIsNotNone(obj, msg)
+    tc.assertIsNotNone(obj, msg)
 
 
 def assert_equal(a, b, msg=""):
-    testcase_instance.assertEqual(a, b, msg)
+    tc.assertEqual(a, b, msg)
 
 
 def assert_not_equal(a, b, msg=""):
-    testcase_instance.assertNotEqual(a, b, msg)
+    tc.assertNotEqual(a, b, msg)
 
 
 def assert_greater_than(a, b, msg=""):
-    testcase_instance.assertGreater(a, b, msg)
+    tc.assertGreater(a, b, msg)
 
 
 def assert_greater_equal_than(a, b, msg=""):
-    testcase_instance.assertGreaterEqual(a, b, msg)
+    tc.assertGreaterEqual(a, b, msg)
 
 
 def assert_less_than(a, b, msg=""):
-    testcase_instance.assertLess(a, b, msg)
+    tc.assertLess(a, b, msg)
 
 
 def assert_less_equal_than(a, b, msg=""):
-    testcase_instance.assertLessEqual(a, b, msg)
+    tc.assertLessEqual(a, b, msg)
 
 
 def assert_raises(err, func, *args, **kwargs):
-    testcase_instance.assertRaises(err, func, *args, **kwargs)
+    tc.assertRaises(err, func, *args, **kwargs)
 
 
 def assert_type(obj, t, msg=""):
-    testcase_instance.assertIsInstance(obj, t, msg)
+    tc.assertIsInstance(obj, t, msg)
 
 
 def assert_not_type(obj, t, msg=""):
-    testcase_instance.assertNotIsInstance(obj, t, msg)
+    tc.assertNotIsInstance(obj, t, msg)
 
 
 def assert_contains(coll, obj, msg=""):
-    testcase_instance.assertIn(obj, coll, msg)
+    tc.assertIn(obj, coll, msg)
 
 
 def assert_not_contains(coll, obj, msg=""):
-    testcase_instance.assertNotIn(obj, coll, msg)
+    tc.assertNotIn(obj, coll, msg)
 
 
 class Assert:
@@ -204,9 +204,11 @@ class Assert:
     # Bool Assertions
     
     def is_true(self):
+        """Assert that the value is True."""
         assert_true(self.value)
 
     def is_false(self):
+        """Assert that the value is False."""
         assert_false(self.value)
 
     is_not_true = is_false
@@ -242,7 +244,7 @@ class Assert:
         assert_not_contains(self.value, key, msg)
         return self
 
-    def has_same_elements(self, other):
+    def has_same_elements_as(self, other):
         """Assert that this and the other collection has the same elements."""
         msg = "Expected {} and {} to contain the same elements".format(self.value, other)
         assert_equal(sorted(self.value), other, msg)
@@ -284,54 +286,97 @@ class Assert:
     # HTTP Assertions
     
     def has_status_successful(self):
+        """Assert that the response has a successful HTTP status code."""
         msg = "Expected successful HTTP status code but was {}".format(self.value.status_code)
         assert_less_than(self.value.status_code, 400, msg)
         return self
+    
+    def has_status_failed(self):
+        """Assert that the response has a failed HTTP status code."""
+        msg = "Expected failed HTTP status code but was {}".format(self.value.status_code)
+        assert_greater_equal_than(self.value.status_code, 400, msg)
+        return self
 
     def has_status_ok(self):
+        """Assert that the response has HTTP status code 200 (OK)."""
         return self._has_status(200)
 
     def has_status_created(self):
+        """Assert that the response has HTTP status code 201 (Created)."""
         return self._has_status(201)
 
     def has_status_no_content(self):
+        """Assert that the response has HTTP status code 204 (No content)."""
         return self._has_status(204)
 
     def has_status_bad_request(self):
+        """Assert that the response has HTTP status code 400 (Bad request)."""
         return self._has_status(400)
 
     def has_status_unauthorized(self):
+        """Assert that the response has HTTP status code 401 (Unauthorized)."""
         return self._has_status(401)
 
     def has_status_forbidden(self):
+        """Assert that the response has HTTP status code 403 (Forbidden)."""
         return self._has_status(403)
 
     def has_status_not_found(self):
+        """Assert that the response has HTTP status code 404 (Not found)."""
         return self._has_status(404)
 
     def has_status_method_not_allowed(self):
+        """Assert that the response has HTTP status code 405 (Method not allowed)."""
         return self._has_status(405)
 
     def has_status_precondition_failed(self):
+        """Assert that the response has HTTP status code 412 (Precondition failed)."""
         return self._has_status(412)
     
     def _has_status(self, expected: int):
         msg = "Expected HTTP status {} but was {}".format(expected, self.value.status_code)
+        try:
+            hasattr(self.value, "status_code")
+        except AttributeError:
+            raise AssertionError("{} does not have any 'status_code' attribute")
+
         assert_equal(self.value.status_code, expected, msg)
         return self
 
-    def body_equals(self, body: dict):
-        msg = "Expected body {} to equal {}".format(self.value.json(), body)
-        assert_equal(self.value.json(), body, msg)
+    def body_equals(self, other_body):
+        """Assert that the response has a body equal to other_body.
+        
+        Args:
+            other_body (json|string): the body to compare to
+        """
+        if isinstance(other_body, dict):
+            my_body = self.value.json()
+        elif isinstance(other_body, str):
+            my_body = self.value.text
+        else:
+            raise TypeError("cannot compare body with type {}".format(type(other_body)))
+
+        msg = "Expected body {} to equal {}".format(my_body, other_body)
+        assert_equal(my_body, other_body, msg)
         return self
 
     def body_length(self, length: int):
+        """Assert that the response has a body has the given length.
+
+        Args:
+            length (int): the expected length of the body
+        """
         actual = len(self.value.json())
         msg = "Expected body length to be {} but was {}".format(actual, length)
         assert_equal(actual, length, msg)
         return self
 
     def body_contains_key(self, key: str):
+        """Assert that the response body contains the given key.
+
+        Args:
+            key (str): the key to check if it exists in the body
+        """
         msg = "Expected body {} to contain key {}".format(self.value.json(), key)
         assert_contains(self.value.json(), key, msg)
         return self
