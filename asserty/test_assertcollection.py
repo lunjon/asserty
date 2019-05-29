@@ -10,9 +10,9 @@ def test_has_length_on_list():
 
 def test_has_length_on_dict():
     assert_that({}).has_length(0)
-    assert_that({"a":1}).has_length(1)
-    assert_that({"a":1}).has_length({"b":2})
-    assert_that({"a":1}).not_has_length(2)
+    assert_that({"a": 1}).has_length(1)
+    assert_that({"a": 1}).has_length({"b": 2})
+    assert_that({"a": 1}).not_has_length(2)
 
 
 def test_has_length_on_str():
@@ -25,6 +25,8 @@ def test_contains():
 
 
 def test_contains_key():
-    assert_that({"a":1}).contains_key("a")
-    assert_that({"a":1}).not_contains_key("b")
+    assert_that({"a": 1}).contains_key("a")
+    assert_that({"a": 1}).not_contains_key("b")
     
+    # With value
+    assert_that({"a": 1}).contains_key_with_value("a", 1)

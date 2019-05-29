@@ -1,4 +1,5 @@
 from unittest import TestCase
+from typing import Any
 
 
 tc = TestCase("__init__")
@@ -223,13 +224,21 @@ class Assert:
         return self
 
     def not_contains(self, obj):
-        """Assert that this DO NOT contain the given object."""
+        """Assert that this DO NOT contain the given object.
+        
+        Args:
+            obj (object): the object to check for in this value
+        """
         msg = "Expected {} not to contain {}".format(self.value, obj)
         assert_not_contains(self.value, obj, msg)
         return self
 
-    def contains_key(self, key):
-        """Assert that this contains the given key."""
+    def contains_key(self, key: str):
+        """Assert that this contains the given key.
+        
+        Args:
+            key (str): the key to check for in this collection
+        """
         if not hasattr(self.value, "__contains__"):
             raise TypeError("value has no keys")
         msg = "Expected {} to contain key {}".format(self.value, key)
@@ -237,12 +246,34 @@ class Assert:
         return self
 
     def not_contains_key(self, key):
-        """Assert that this DO NOT contains the given key."""
+        """Assert that this DO NOT contains the given key.
+        
+        Args:
+            key (str): the key to check that it does not exist in this collection
+        """
         if not hasattr(self.value, "__contains__"):
             raise TypeError("value has no keys")
         msg = "Expected {} not to contain key {}".format(self.value, key)
         assert_not_contains(self.value, key, msg)
         return self
+
+    def contains_key_with_value(self, key: str, value: Any):
+        """Assert that this contains the given key and value.
+        
+        Args:
+            key (str): the key to check for in this collection
+            value (Any): the value to expect for the given key value
+        """
+        if not hasattr(self.value, "__contains__"):
+            raise TypeError("value has no keys")
+        msg = "Expected {} to contain key {}".format(self.value, key)
+        assert_contains(self.value, key, msg)
+        msg = "Expected {} to have value {} for key {}".format(self.value, value, key)
+        assert_equal(self.value[key], value, msg)
+        return self
+    
+    has_key_with_value = contains_key_with_value
+    has_key_and_value = contains_key_with_value
 
     def has_same_elements_as(self, other):
         """Assert that this and the other collection has the same elements."""
