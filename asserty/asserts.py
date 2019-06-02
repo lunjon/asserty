@@ -1,5 +1,5 @@
 from unittest import TestCase
-from typing import Any
+from typing import Any, Union
 
 
 tc = TestCase("__init__")
@@ -278,7 +278,7 @@ class Assert:
     def has_same_elements_as(self, other):
         """Assert that this and the other collection has the same elements."""
         msg = "Expected {} and {} to contain the same elements".format(self.value, other)
-        assert_equal(sorted(self.value), other, msg)
+        assert_equal(sorted(self.value), sorted(other), msg)
         return self
     
     # Callable assertions
@@ -374,11 +374,11 @@ class Assert:
         assert_equal(self.value.status_code, expected, msg)
         return self
 
-    def body_equals(self, other_body):
+    def body_equals(self, other_body: Union[dict, str]) -> object:
         """Assert that the response has a body equal to other_body.
         
         Args:
-            other_body (json|string): the body to compare to
+            other_body (Union[dict, str]): the body to compare to
         """
         if isinstance(other_body, dict):
             my_body = self.value.json()

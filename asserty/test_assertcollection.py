@@ -30,3 +30,8 @@ def test_contains_key():
     
     # With value
     assert_that({"a": 1}).contains_key_with_value("a", 1)
+
+
+def test_has_same_elements_as():
+    assert_that([1,2,3]).has_same_elements_as([2,1,3])
+
