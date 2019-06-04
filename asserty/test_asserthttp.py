@@ -1,8 +1,7 @@
 from . import assert_that
-from requests import Response
 
 
-class MockResponse(Response):
+class MockResponse:
     def __init__(self, status_code: int, body):
         super().__init__()
         self.status_code: int = status_code

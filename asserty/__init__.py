@@ -1,7 +1,7 @@
 from .asserts import Assert
 from .expected_error import  expected_error
 
-version = "0.0.5"
+version = "1.0.0"
 name = "asserty"
 
 
