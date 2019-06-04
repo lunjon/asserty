@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/lunjon/asserty.svg?branch=master)](https://travis-ci.com/lunjon/asserty)
+
 # Asserty
 
 _Asserty_ is a utility package that provides methods for better assertion in testing.
