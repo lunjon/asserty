@@ -2,6 +2,14 @@
 
 This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
+## Unreleased
+### Added
+- `has_length_greater*`
+- `has_length_less*`
+
+### Fixed
+- Docstring from `has_length*` methods
+
 ## [1.0.0] - 2019-06-04
 ## [0.0.5] - 2019-05-28
 ## [0.0.4] - 2019-05-27

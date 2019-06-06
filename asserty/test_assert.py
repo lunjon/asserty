@@ -92,25 +92,14 @@ def test_less():
 
 
 def test_has_attribute():
+    assert_that("str").has_attribute("__str__")
     class MyClass:
         name = "MyClass"
     assert_that("str").has_attribute("__str__")
     assert_that(MyClass()).has_attribute("name")
+
+
+def test_has_attribute_with_value():
+    class MyClass:
+        name = "MyClass"
     assert_that(MyClass()).has_attribute_with_value("name", "MyClass")
-
-
-def test_chained():
-    assert_that(5).is_in(range(10)).and_is.is_less_than(8)
-
-
-def test_readme_examples():
-    assert_that("str").not_equals("string")
-    assert_that(5).is_in(range(10)).also.is_less_than(8)
-
-    def myfunc(arg):
-        if not isinstance(arg, str):
-            raise TypeError()
-        return arg+"yay"
-
-    assert_that(myfunc).if_called_with(1).raises(TypeError)
-    assert_that(myfunc).if_called_with("Hey-").returns("Hey-yay")

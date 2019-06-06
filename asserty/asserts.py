@@ -109,6 +109,7 @@ class Assert:
 
     has_same_type_as = has_type
     is_instance = has_type
+    is_instance_type = has_type
 
     def not_has_type(self, expected):
         """Assert that this NOT have the expected type."""
@@ -120,6 +121,7 @@ class Assert:
 
     not_has_same_type_as = not_has_type
     not_is_instance = not_has_type
+    not_is_instance_type = not_has_type
 
     def is_in(self, coll):
         """Assert that this is in the given collection."""
@@ -134,7 +136,7 @@ class Assert:
         return self
 
     def has_length(self, expected):
-        """Assert that this is of the expected length"""
+        """Assert that this is of the expected length."""
         if hasattr(expected, "__len__"):
             expected = len(expected)
         msg = "Expected {} to have length {} but was {}".format(self.value, expected, len(self.value))
@@ -142,11 +144,43 @@ class Assert:
         return self
 
     def not_has_length(self, expected):
-        """Assert that this is NOT of the expected length"""
+        """Assert that this is NOT of the expected length."""
         if hasattr(expected, "__len__"):
             expected = len(expected)
         msg = "Expected {} to have length {} but was".format(self.value, expected)
         assert_not_equal(len(self.value), expected, msg)
+        return self
+
+    def has_length_greater_than(self, expected: int):
+        """Assert that the length is greater than the given value."""
+        if hasattr(expected, "__len__"):
+            expected = len(expected)
+        msg = "Expected {} to have length greater than {} but was {}".format(self.value, expected, len(self.value))
+        assert_greater_than(len(self.value), expected, msg)
+        return self
+
+    def has_length_greater_or_equal_to(self, expected):
+        """Assert that the length is greater or equal to the given value."""
+        if hasattr(expected, "__len__"):
+            expected = len(expected)
+        msg = "Expected {} to have length greater or equal to {} but was {}".format(self.value, expected, len(self.value))
+        assert_greater_equal_than(len(self.value), expected, msg)
+        return self
+
+    def has_length_less_than(self, expected):
+        """Assert that the length is less than the given value."""
+        if hasattr(expected, "__len__"):
+            expected = len(expected)
+        msg = "Expected {} to have length less than {} but was".format(self.value, expected)
+        assert_less_than(len(self.value), expected, msg)
+        return self
+
+    def has_length_less_or_equal_to(self, expected):
+        """Assert that the length is less or equal to the given value."""
+        if hasattr(expected, "__len__"):
+            expected = len(expected)
+        msg = "Expected {} to have length less or equal to {} but was".format(self.value, expected)
+        assert_less_equal_than(len(self.value), expected, msg)
         return self
 
     def is_greater_than(self, other):
@@ -156,19 +190,19 @@ class Assert:
         return self
 
     def is_greater_or_equal_to(self, other):
-        """Assert that this is greater than other."""
+        """Assert that this is greater or equal to the other."""
         msg = "Expected {} to be greater or equal to {}".format(self.value, other)
         assert_greater_equal_than(self.value, other, msg)
         return self
 
     def is_less_than(self, other):
-        """Assert that this is greater than other."""
+        """Assert that this is less than other."""
         msg = "Expected {} to be less than {}".format(self.value, other)
         assert_less_than(self.value, other, msg)
         return self
 
     def is_less_or_equal_to(self, other):
-        """Assert that this is greater than other."""
+        """Assert that this is less or equal to the other."""
         msg = "Expected {} to be less or equal to {}".format(self.value, other)
         assert_less_equal_than(self.value, other, msg)
         return self
@@ -387,7 +421,6 @@ class Assert:
         else:
             raise TypeError("cannot compare body with type {}".format(type(other_body)))
 
-        print(my_body)
         msg = "Expected body {} to equal {}".format(my_body, other_body)
         assert_equal(my_body, other_body, msg)
         return self
