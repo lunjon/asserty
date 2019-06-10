@@ -68,11 +68,8 @@ def test_has_type_on_str():
 
 def test_also():
     assert_that("str").equals("str").also.not_equals("string")
-
-
-def test_and_do():
-    assert_that("str").equals("str").and_do.not_equals("string")
-
+    assert_that("str").has_length(3).also.contains("s")
+    
 
 def test_is_in():
     assert_that(1).is_in(range(10))
@@ -93,6 +90,7 @@ def test_less():
 
 def test_has_attribute():
     assert_that("str").has_attribute("__str__")
+    
     class MyClass:
         name = "MyClass"
     assert_that("str").has_attribute("__str__")

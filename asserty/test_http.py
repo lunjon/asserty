@@ -24,13 +24,24 @@ def test_status():
     assert_that(res).has_status_created().also.has_status_successful()
 
 
-def test_body():
+def test_body_equals():
     res = MockResponse(200, {"a": 1})
-    assert_that(res).body_contains_key("a")
     assert_that(res).body_equals({"a": 1})
     assert_that(res).body_equals("{'a': 1}")
+
+
+def test_body_contains_key():
+    res = MockResponse(200, {"a": 1})
+    assert_that(res).body_contains_key("a")
+    assert_that(res).body_contains_key_with_value("a", 1)
+
+
+def test_body_contains_subset():
+    res = MockResponse(200, {"a": 1, "b": 2})
+    assert_that(res).body_contains_subset({"a": 1})
 
 
 def test_status_and_body():
     res = MockResponse(200, {"a": 1})
     assert_that(res).has_status_ok().also.body_contains_key("a")
+    assert_that(res).has_status_ok().and_that.body_contains_key("a")

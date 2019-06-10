@@ -6,6 +6,7 @@ This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.htm
 ### Added
 - `has_length_greater*`
 - `has_length_less*`
+- methods `subset` for asserting sub-sets
 
 ### Fixed
 - Docstring from `has_length*` methods

@@ -1,47 +1,46 @@
 from unittest import TestCase
 from typing import Any, Union
 
-
 tc = TestCase("__init__")
 
 
-def assert_true(obj, msg=""):
+def assert_true(obj, msg: str = ""):
     tc.assertTrue(obj, msg)
 
 
-def assert_false(obj, msg=""):
+def assert_false(obj, msg: str = ""):
     tc.assertFalse(obj, msg)
 
 
-def assert_none(obj, msg=""):
+def assert_none(obj, msg: str = ""):
     tc.assertIsNone(obj, msg)
 
 
-def assert_not_none(obj, msg=""):
+def assert_not_none(obj, msg: str = ""):
     tc.assertIsNotNone(obj, msg)
 
 
-def assert_equal(a, b, msg=""):
+def assert_equal(a, b, msg: str = ""):
     tc.assertEqual(a, b, msg)
 
 
-def assert_not_equal(a, b, msg=""):
+def assert_not_equal(a, b, msg: str = ""):
     tc.assertNotEqual(a, b, msg)
 
 
-def assert_greater_than(a, b, msg=""):
+def assert_greater_than(a, b, msg: str = ""):
     tc.assertGreater(a, b, msg)
 
 
-def assert_greater_equal_than(a, b, msg=""):
+def assert_greater_equal_than(a, b, msg: str = ""):
     tc.assertGreaterEqual(a, b, msg)
 
 
-def assert_less_than(a, b, msg=""):
+def assert_less_than(a, b, msg: str = ""):
     tc.assertLess(a, b, msg)
 
 
-def assert_less_equal_than(a, b, msg=""):
+def assert_less_equal_than(a, b, msg: str = ""):
     tc.assertLessEqual(a, b, msg)
 
 
@@ -49,12 +48,23 @@ def assert_raises(err, func, *args, **kwargs):
     tc.assertRaises(err, func, *args, **kwargs)
 
 
-def assert_type(obj, t, msg=""):
+def assert_type(obj, t, msg: str = ""):
     tc.assertIsInstance(obj, t, msg)
 
 
-def assert_not_type(obj, t, msg=""):
+def assert_not_type(obj, t, msg: str = ""):
     tc.assertNotIsInstance(obj, t, msg)
+
+
+def assert_iterable(obj, msg: str = ""):
+    try:
+        iter(obj)
+    except TypeError:
+        tc.fail(msg)
+
+
+def fail(msg: str):
+    tc.fail(msg)
 
 
 def assert_contains(coll, obj, msg=""):
@@ -76,6 +86,7 @@ class Assert:
 
     and_do = also
     and_is = also
+    and_that = also
 
     def is_none(self):
         """Assert that this has a value of None."""
@@ -163,7 +174,8 @@ class Assert:
         """Assert that the length is greater or equal to the given value."""
         if hasattr(expected, "__len__"):
             expected = len(expected)
-        msg = "Expected {} to have length greater or equal to {} but was {}".format(self.value, expected, len(self.value))
+        msg = "Expected {} to have length greater or equal to {} but was {}".format(self.value, expected,
+                                                                                    len(self.value))
         assert_greater_equal_than(len(self.value), expected, msg)
         return self
 
@@ -233,11 +245,12 @@ class Assert:
             hasattr(self.value, name)
         except AttributeError:
             raise AssertionError(msg)
-        assert_equal(self.value.__getattribute__(name), value, msg = "Expected {} to have an attribute named {} with value {}".format(self.value, name, value))
+        assert_equal(self.value.__getattribute__(name), value,
+                     msg="Expected {} to have an attribute named {} with value {}".format(self.value, name, value))
         return self
-    
+
     # Bool Assertions
-    
+
     def is_true(self):
         """Assert that the value is True."""
         assert_true(self.value)
@@ -248,8 +261,13 @@ class Assert:
 
     is_not_true = is_false
     is_not_false = is_true
-    
+
     # Collection Assertions
+
+    def is_iterable(self):
+        """Assert that this object is an iterable."""
+        msg = "Expected {} to be an iterable".format(self.value)
+        assert_iterable(self.value, msg)
 
     def contains(self, obj):
         """Assert that this contain the given object."""
@@ -305,16 +323,64 @@ class Assert:
         msg = "Expected {} to have value {} for key {}".format(self.value, value, key)
         assert_equal(self.value[key], value, msg)
         return self
-    
+
     has_key_with_value = contains_key_with_value
     has_key_and_value = contains_key_with_value
+
+    def contains_subset(self, subset: Union[set, list, dict]):
+        """Assert that this contains the given sub-set.
+        
+        Args:
+            subset (Union[set, list, dict]): the collection that is expected to exist in this
+        """
+        msg = "Expected {} to contain the subset {}".format(self.value, subset)
+        self.is_iterable()
+        assert_iterable(subset)
+
+        if not isinstance(self.value, set):
+            superset = set(self.value)
+        else:
+            superset = self.value
+
+        if not isinstance(subset, set):
+            subset = set(subset)
+
+        if subset.issubset(superset):
+            return self
+        else:
+            fail(msg)
+
+    has_subset = contains_subset
+
+    def is_subset_of(self, superset: Union[set, list, dict]):
+        """Assert that this is a sub-set of the given super-set.
+
+        Args:
+            superset (Union[set, list, dict]): the collection that is expected to be a super-set of this
+        """
+        msg = "Expected {} to contain the sub-set {}".format(superset, self.value)
+        self.is_iterable()
+        assert_iterable(superset)
+
+        if not isinstance(self.value, set):
+            subset = set(self.value)
+        else:
+            subset = self.value
+
+        if not isinstance(superset, set):
+            superset = set(superset)
+
+        if subset.issubset(superset):
+            return self
+        else:
+            fail(msg)
 
     def has_same_elements_as(self, other):
         """Assert that this and the other collection has the same elements."""
         msg = "Expected {} and {} to contain the same elements".format(self.value, other)
         assert_equal(sorted(self.value), sorted(other), msg)
         return self
-    
+
     # Callable assertions
 
     @property
@@ -347,15 +413,15 @@ class Assert:
         actual = self.value(*self.args, **self.kwargs)
         msg = "Expected {} but {} was returned".format(expected, actual)
         assert_equal(actual, expected, msg)
-    
+
     # HTTP Assertions
-    
+
     def has_status_successful(self):
         """Assert that the response has a successful HTTP status code."""
         msg = "Expected successful HTTP status code but was {}".format(self.value.status_code)
         assert_less_than(self.value.status_code, 400, msg)
         return self
-    
+
     def has_status_failed(self):
         """Assert that the response has a failed HTTP status code."""
         msg = "Expected failed HTTP status code but was {}".format(self.value.status_code)
@@ -397,7 +463,7 @@ class Assert:
     def has_status_precondition_failed(self):
         """Assert that the response has HTTP status code 412 (Precondition failed)."""
         return self._has_status(412)
-    
+
     def _has_status(self, expected: int):
         msg = "Expected HTTP status {} but was {}".format(expected, self.value.status_code)
         try:
@@ -408,32 +474,21 @@ class Assert:
         assert_equal(self.value.status_code, expected, msg)
         return self
 
-    def body_equals(self, other_body: Union[dict, str]) -> object:
+    def body_equals(self, obj: Union[dict, str]):
         """Assert that the response has a body equal to other_body.
         
         Args:
-            other_body (Union[dict, str]): the body to compare to
+            obj (Union[dict, str]): the body to compare to
         """
-        if isinstance(other_body, dict):
+        if isinstance(obj, dict):
             my_body = self.value.json()
-        elif isinstance(other_body, str):
+        elif isinstance(obj, str):
             my_body = self.value.text
         else:
-            raise TypeError("cannot compare body with type {}".format(type(other_body)))
+            raise TypeError("cannot compare body with type {}".format(type(obj)))
 
-        msg = "Expected body {} to equal {}".format(my_body, other_body)
-        assert_equal(my_body, other_body, msg)
-        return self
-
-    def body_length(self, length: int):
-        """Assert that the response has a body has the given length.
-
-        Args:
-            length (int): the expected length of the body
-        """
-        actual = len(self.value.json())
-        msg = "Expected body length to be {} but was {}".format(actual, length)
-        assert_equal(actual, length, msg)
+        msg = "Expected body {} to equal {}".format(my_body, obj)
+        assert_equal(my_body, obj, msg)
         return self
 
     def body_contains_key(self, key: str):
@@ -445,3 +500,32 @@ class Assert:
         msg = "Expected body {} to contain key {}".format(self.value.json(), key)
         assert_contains(self.value.json(), key, msg)
         return self
+
+    def body_contains_key_with_value(self, key: str, value: Any):
+        """Assert that the response body contains the given key and value.
+
+        Args:
+            key (str): the key to check if it exists in the body
+            value (Any): the value that is expected
+        """
+        msg = "Expected body {} to contain key {} with value {}".format(self.value.json(), key, value)
+        assert_contains(self.value.json(), key, msg)
+        assert_equal(self.value.json()[key], value, msg)
+        return self
+
+    def body_contains_subset(self, subset: Union[set, list, dict]):
+        """Assert that the response body contains the given sub-set.
+
+        Args:
+            subset (Union[set, list, dict]): the sub-set which is expected in this body
+        """
+        msg = "Expected body {} to contain sub-set {}".format(self.value.json(), subset)
+        assert_iterable(subset)
+        
+        if not isinstance(subset, set):
+            subset = set(subset)
+        
+        if subset.issubset(self.value.json()):
+            return self
+        else:
+            fail(msg)

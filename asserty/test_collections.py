@@ -57,6 +57,32 @@ def test_contains_key():
 
 def test_contains_key_with_value():
     assert_that({"a": 1}).contains_key_with_value("a", 1)
+    
+
+def test_contains_subset():
+    # list
+    assert_that([1, 2, 3]).contains_subset([1])
+    assert_that([1, 2, 3]).contains_subset([1])
+    assert_that([1, 2, 3]).contains_subset([1, 2, 3])
+    
+    # dict
+    assert_that({"a": 1, "b": 2}).contains_subset({"b": 2})
+    assert_that({"a": 1, "b": 2}).contains_subset({"a": 1, "b": 2})
+    
+    # set
+    assert_that({1, 2, 3, 4}).contains_subset({3})
+    
+    # mixed types
+    assert_that({1, 2, 3}).contains_subset([1, 2])
+    
+
+def test_is_subset_of():
+    # list
+    assert_that([1, 3]).is_subset_of([1, 2, 3, 4])
+    assert_that([1, 2, 3]).is_subset_of([1, 2, 3])
+    
+    # dict
+    assert_that({"a": 1}).is_subset_of({"a": 1, "b": 2})
 
 
 def test_has_same_elements_as():
