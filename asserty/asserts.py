@@ -499,6 +499,16 @@ class Assert:
         assert_equal(self.value.status_code, expected, msg)
         return self
 
+    def body_length(self, length: int):
+        """Assert that the response body has the given length. 
+
+        Args:
+            length (int): the expected length of the body
+        """
+        msg = "Expected body {} to have length {}".format(self.value.json(), length)
+        assert_equal(len(self.value.json()), length, msg)
+        return self
+
     def body_equals(self, obj: Union[dict, str]):
         """Assert that the response has a body equal to other_body.
 

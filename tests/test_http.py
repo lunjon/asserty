@@ -24,6 +24,14 @@ def test_status():
     assert_that(res).has_status_created().also.has_status_successful()
 
 
+def test_body_length():
+    res = MockResponse(200, {"a": 1})
+    assert_that(res).body_length(1)
+    
+    res = MockResponse(200, [{"a": 1}, {"b": 2}])
+    assert_that(res).body_length(2)
+
+
 def test_body_equals():
     res = MockResponse(200, {"a": 1})
     assert_that(res).body_equals({"a": 1})

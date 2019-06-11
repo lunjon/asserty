@@ -4,6 +4,10 @@ This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.htm
 
 ## Unreleased
 ### Added
+- `body_length`
+
+## [1.1.0] - 2019-06-11
+### Added
 - `has_length_greater*`
 - `has_length_less*`
 - methods `subset` for asserting sub-sets
