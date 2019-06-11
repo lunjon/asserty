@@ -3,6 +3,8 @@
 This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
 ## Unreleased
+
+## [1.2.0] - 2019-06-11
 ### Added
 - `body_length`
 
