@@ -10,7 +10,7 @@ Examples:
 from .asserts import Assert
 from .expected_error import  expected_error
 
-version = "1.0.0"
+version = "1.1.0"
 name = "asserty"
 
 
