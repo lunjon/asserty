@@ -1,5 +1,5 @@
 from unittest import TestCase
-from typing import Any, Union
+from typing import Any, Union, Iterable
 
 tc = TestCase("__init__")
 
@@ -134,13 +134,13 @@ class Assert:
     not_is_instance = not_has_type
     not_is_instance_type = not_has_type
 
-    def is_in(self, coll):
+    def is_in(self, coll: Iterable):
         """Assert that this is in the given collection."""
         msg = "Expected {} to be in {} but was not".format(self.value, coll)
         assert_contains(coll, self.value, msg)
         return self
 
-    def is_not_in(self, coll):
+    def is_not_in(self, coll: Iterable):
         """Assert that this is NOT in the given collection."""
         msg = "Expected {} not to be in {} but was".format(self.value, coll)
         assert_not_contains(coll, self.value, msg)
@@ -327,11 +327,11 @@ class Assert:
     has_key_with_value = contains_key_with_value
     has_key_and_value = contains_key_with_value
 
-    def contains_subset(self, subset: Union[set, list, dict]):
+    def contains_subset(self, subset: Iterable):
         """Assert that this contains the given sub-set.
         
         Args:
-            subset (Union[set, list, dict]): the collection that is expected to exist in this
+            subset (Iterable): the collection that is expected to exist in this
         """
         msg = "Expected {} to contain the subset {}".format(self.value, subset)
         self.is_iterable()
@@ -352,11 +352,11 @@ class Assert:
 
     has_subset = contains_subset
 
-    def is_subset_of(self, superset: Union[set, list, dict]):
+    def is_subset_of(self, superset: Iterable):
         """Assert that this is a sub-set of the given super-set.
 
         Args:
-            superset (Union[set, list, dict]): the collection that is expected to be a super-set of this
+            superset (Iterable): the collection that is expected to be a super-set of this
         """
         msg = "Expected {} to contain the sub-set {}".format(superset, self.value)
         self.is_iterable()
@@ -375,9 +375,11 @@ class Assert:
         else:
             fail(msg)
 
-    def has_same_elements_as(self, other):
+    def has_same_elements_as(self, other: Iterable):
         """Assert that this and the other collection has the same elements."""
         msg = "Expected {} and {} to contain the same elements".format(self.value, other)
+        self.is_iterable()
+        assert_iterable(other)
         assert_equal(sorted(self.value), sorted(other), msg)
         return self
 
@@ -513,11 +515,11 @@ class Assert:
         assert_equal(self.value.json()[key], value, msg)
         return self
 
-    def body_contains_subset(self, subset: Union[set, list, dict]):
+    def body_contains_subset(self, subset: Iterable):
         """Assert that the response body contains the given sub-set.
 
         Args:
-            subset (Union[set, list, dict]): the sub-set which is expected in this body
+            subset (Iterable): the sub-set which is expected in this body
         """
         msg = "Expected body {} to contain sub-set {}".format(self.value.json(), subset)
         assert_iterable(subset)

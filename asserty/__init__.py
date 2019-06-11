@@ -1,3 +1,13 @@
+"""asserty can be used to make assertions on object and works bets in test contexts.
+
+Import 'assert_that' (or 'that' if outside a context that handles AssertionError's) from asserty to make assertion.
+
+Examples:
+    >>> from asserty import that
+    >>> assert that("Google".lower()).equals("google")
+
+"""
+from typing import Any
 from .asserts import Assert
 from .expected_error import  expected_error
 
@@ -5,14 +15,14 @@ version = "1.0.0"
 name = "asserty"
 
 
-def assert_that(obj):
+def assert_that(obj: Any):
     """Make assertions on the given object.
 
     Args:
-        obj (object): The subject to which make assertions on.
+        obj (Any): The subject to which make assertions on.
 
     Returns:
-        Assert: An object with assertion methods relevant for the type of the object.
+        Assert: An class with assertion methods that work on the argument 'obj'
     """
     return Assert(obj)
 

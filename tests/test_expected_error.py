@@ -1,4 +1,4 @@
-from . import expected_error
+from asserty import expected_error
 
 
 def test_expect_error():

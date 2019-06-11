@@ -1,4 +1,4 @@
-from . import assert_that
+from asserty import assert_that
 
 
 class MockResponse:

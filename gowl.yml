@@ -14,13 +14,7 @@ jobs:
   test:
     description: Run the unit tests for asserty
     script:
-      - pytest -v asserty
-  
-  install:
-    description: Install the requirements to develop and publish
-    script:
-      - python3 -m pip install --user --upgrade -r requirements.txt
-      - python3 setup.py sdist bdist_wheel
+      - pytest -v tests
   
   dist:
     description: Create the distribution package

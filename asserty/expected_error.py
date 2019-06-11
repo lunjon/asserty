@@ -1,4 +1,13 @@
 class expected_error:
+    """This class provides a context manager that wraps a given error.
+    
+    Example:
+        >>> from asserty import expected_error
+        >>> with expected_error(ValueError):
+        ...     int("int")
+        >>> 
+
+    """
 
     def __init__(self, err_type):
         if not isinstance(err_type, type):
