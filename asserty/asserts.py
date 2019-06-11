@@ -5,58 +5,72 @@ tc = TestCase("__init__")
 
 
 def assert_true(obj, msg: str = ""):
+    """Assert that obj evaluates to True."""
     tc.assertTrue(obj, msg)
 
 
 def assert_false(obj, msg: str = ""):
+    """Assert that obj evaluates to False."""
     tc.assertFalse(obj, msg)
 
 
 def assert_none(obj, msg: str = ""):
+    """Assert that obj is None."""
     tc.assertIsNone(obj, msg)
 
 
 def assert_not_none(obj, msg: str = ""):
+    """Assert that obj is NOT None."""
     tc.assertIsNotNone(obj, msg)
 
 
-def assert_equal(a, b, msg: str = ""):
-    tc.assertEqual(a, b, msg)
+def assert_equal(obj1, obj2, msg: str = ""):
+    """Assert that obj1 is equal to obj2."""
+    tc.assertEqual(obj1, obj2, msg)
 
 
-def assert_not_equal(a, b, msg: str = ""):
-    tc.assertNotEqual(a, b, msg)
+def assert_not_equal(obj1, obj2, msg: str = ""):
+    """Assert that obj1 is NOT equal to obj2."""
+    tc.assertNotEqual(obj1, obj2, msg)
 
 
 def assert_greater_than(a, b, msg: str = ""):
+    """Assert that a is greater than b."""
     tc.assertGreater(a, b, msg)
 
 
-def assert_greater_equal_than(a, b, msg: str = ""):
+def assert_greater_equal_to(a, b, msg: str = ""):
+    """Assert that a is greater or equal to b."""
     tc.assertGreaterEqual(a, b, msg)
 
 
 def assert_less_than(a, b, msg: str = ""):
+    """Assert that a is less than b."""
     tc.assertLess(a, b, msg)
 
 
-def assert_less_equal_than(a, b, msg: str = ""):
+def assert_less_equal_to(a, b, msg: str = ""):
+    """Assert that a is less or equal to b."""
     tc.assertLessEqual(a, b, msg)
 
 
 def assert_raises(err, func, *args, **kwargs):
+    """Assert that if func is called with the given arguments it raises an error of the given type."""
     tc.assertRaises(err, func, *args, **kwargs)
 
 
-def assert_type(obj, t, msg: str = ""):
+def assert_type(obj: object, t: type, msg: str = ""):
+    """Assert that obj is of the given type."""
     tc.assertIsInstance(obj, t, msg)
 
 
-def assert_not_type(obj, t, msg: str = ""):
+def assert_not_type(obj, t: type, msg: str = ""):
+    """Assert that obj is NOT of the given type."""
     tc.assertNotIsInstance(obj, t, msg)
 
 
 def assert_iterable(obj, msg: str = ""):
+    """Assert that obj is an iterable type."""
     try:
         iter(obj)
     except TypeError:
@@ -64,14 +78,17 @@ def assert_iterable(obj, msg: str = ""):
 
 
 def fail(msg: str):
+    """Fail with the given message."""
     tc.fail(msg)
 
 
-def assert_contains(coll, obj, msg=""):
+def assert_contains(coll: Iterable, obj: object, msg=""):
+    """Assert that coll contains the given object."""
     tc.assertIn(obj, coll, msg)
 
 
 def assert_not_contains(coll, obj, msg=""):
+    """Assert that coll NOT contains the given object."""
     tc.assertNotIn(obj, coll, msg)
 
 
@@ -114,7 +131,8 @@ class Assert:
         """Assert that this has the expected type."""
         if not isinstance(expected, type):
             expected = type(expected)
-        msg = "Expected {} to have type {} but was {}".format(self.value, type(self.value), expected)
+        msg = "Expected {} to have type {} but was {}" \
+            .format(self.value, type(self.value), expected)
         assert_type(self.value, expected, msg)
         return self
 
@@ -150,7 +168,8 @@ class Assert:
         """Assert that this is of the expected length."""
         if hasattr(expected, "__len__"):
             expected = len(expected)
-        msg = "Expected {} to have length {} but was {}".format(self.value, expected, len(self.value))
+        msg = "Expected {} to have length {} but was {}" \
+            .format(self.value, expected, len(self.value))
         assert_equal(len(self.value), expected, msg)
         return self
 
@@ -166,7 +185,9 @@ class Assert:
         """Assert that the length is greater than the given value."""
         if hasattr(expected, "__len__"):
             expected = len(expected)
-        msg = "Expected {} to have length greater than {} but was {}".format(self.value, expected, len(self.value))
+
+        msg = "Expected {} to have length greater than {} but was {}" \
+            .format(self.value, expected, len(self.value))
         assert_greater_than(len(self.value), expected, msg)
         return self
 
@@ -174,9 +195,9 @@ class Assert:
         """Assert that the length is greater or equal to the given value."""
         if hasattr(expected, "__len__"):
             expected = len(expected)
-        msg = "Expected {} to have length greater or equal to {} but was {}".format(self.value, expected,
-                                                                                    len(self.value))
-        assert_greater_equal_than(len(self.value), expected, msg)
+        msg = "Expected {} to have length greater or equal to {} but was {}" \
+            .format(self.value, expected, len(self.value))
+        assert_greater_equal_to(len(self.value), expected, msg)
         return self
 
     def has_length_less_than(self, expected):
@@ -192,7 +213,7 @@ class Assert:
         if hasattr(expected, "__len__"):
             expected = len(expected)
         msg = "Expected {} to have length less or equal to {} but was".format(self.value, expected)
-        assert_less_equal_than(len(self.value), expected, msg)
+        assert_less_equal_to(len(self.value), expected, msg)
         return self
 
     def is_greater_than(self, other):
@@ -204,7 +225,7 @@ class Assert:
     def is_greater_or_equal_to(self, other):
         """Assert that this is greater or equal to the other."""
         msg = "Expected {} to be greater or equal to {}".format(self.value, other)
-        assert_greater_equal_than(self.value, other, msg)
+        assert_greater_equal_to(self.value, other, msg)
         return self
 
     def is_less_than(self, other):
@@ -216,12 +237,12 @@ class Assert:
     def is_less_or_equal_to(self, other):
         """Assert that this is less or equal to the other."""
         msg = "Expected {} to be less or equal to {}".format(self.value, other)
-        assert_less_equal_than(self.value, other, msg)
+        assert_less_equal_to(self.value, other, msg)
         return self
 
     def has_attribute(self, name):
         """Assert that this has an attribute with the given name.
-        
+
         Args:
             name (str): the name of the attribute
         """
@@ -235,18 +256,20 @@ class Assert:
     def has_attribute_with_value(self, name, value):
         """Assert that this has an attribute with the given name and
         an optional value.
-        
+
         Args:
             name (str): the name of the attribute
             value (str): the value of the attribute
         """
-        msg = "Expected {} to have an attribute named {} with value {}".format(self.value, name, value)
+        msg = "Expected {} to have an attribute named {} with value {}" \
+            .format(self.value, name, value)
         try:
             hasattr(self.value, name)
         except AttributeError:
             raise AssertionError(msg)
         assert_equal(self.value.__getattribute__(name), value,
-                     msg="Expected {} to have an attribute named {} with value {}".format(self.value, name, value))
+                     msg="Expected {} to have an attribute named {} with value {}"
+                     .format(self.value, name, value))
         return self
 
     # Bool Assertions
@@ -277,7 +300,7 @@ class Assert:
 
     def not_contains(self, obj):
         """Assert that this DO NOT contain the given object.
-        
+
         Args:
             obj (object): the object to check for in this value
         """
@@ -287,7 +310,7 @@ class Assert:
 
     def contains_key(self, key: str):
         """Assert that this contains the given key.
-        
+
         Args:
             key (str): the key to check for in this collection
         """
@@ -299,7 +322,7 @@ class Assert:
 
     def not_contains_key(self, key):
         """Assert that this DO NOT contains the given key.
-        
+
         Args:
             key (str): the key to check that it does not exist in this collection
         """
@@ -311,7 +334,7 @@ class Assert:
 
     def contains_key_with_value(self, key: str, value: Any):
         """Assert that this contains the given key and value.
-        
+
         Args:
             key (str): the key to check for in this collection
             value (Any): the value to expect for the given key value
@@ -329,7 +352,7 @@ class Assert:
 
     def contains_subset(self, subset: Iterable):
         """Assert that this contains the given sub-set.
-        
+
         Args:
             subset (Iterable): the collection that is expected to exist in this
         """
@@ -427,7 +450,7 @@ class Assert:
     def has_status_failed(self):
         """Assert that the response has a failed HTTP status code."""
         msg = "Expected failed HTTP status code but was {}".format(self.value.status_code)
-        assert_greater_equal_than(self.value.status_code, 400, msg)
+        assert_greater_equal_to(self.value.status_code, 400, msg)
         return self
 
     def has_status_ok(self):
@@ -478,7 +501,7 @@ class Assert:
 
     def body_equals(self, obj: Union[dict, str]):
         """Assert that the response has a body equal to other_body.
-        
+
         Args:
             obj (Union[dict, str]): the body to compare to
         """
@@ -510,7 +533,8 @@ class Assert:
             key (str): the key to check if it exists in the body
             value (Any): the value that is expected
         """
-        msg = "Expected body {} to contain key {} with value {}".format(self.value.json(), key, value)
+        msg = "Expected body {} to contain key {} with value {}" \
+            .format(self.value.json(), key, value)
         assert_contains(self.value.json(), key, msg)
         assert_equal(self.value.json()[key], value, msg)
         return self
@@ -523,10 +547,10 @@ class Assert:
         """
         msg = "Expected body {} to contain sub-set {}".format(self.value.json(), subset)
         assert_iterable(subset)
-        
+
         if not isinstance(subset, set):
             subset = set(subset)
-        
+
         if subset.issubset(self.value.json()):
             return self
         else:

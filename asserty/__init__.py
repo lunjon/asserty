@@ -1,4 +1,4 @@
-"""asserty can be used to make assertions on object and works bets in test contexts.
+"""asserty can be used to make assertions on object and works best in test contexts.
 
 Import 'assert_that' (or 'that' if outside a context that handles AssertionError's) from asserty to make assertion.
 
@@ -7,7 +7,6 @@ Examples:
     >>> assert that("Google".lower()).equals("google")
 
 """
-from typing import Any
 from .asserts import Assert
 from .expected_error import  expected_error
 
@@ -15,7 +14,7 @@ version = "1.0.0"
 name = "asserty"
 
 
-def assert_that(obj: Any):
+def assert_that(obj: object) -> Assert:
     """Make assertions on the given object.
 
     Args:
