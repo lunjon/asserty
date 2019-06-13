@@ -461,6 +461,10 @@ class Assert:
         """Assert that the response has HTTP status code 201 (Created)."""
         return self._has_status(201)
 
+    def has_status_accepted(self):
+        """Assert that the response has HTTP status code 202 (Accepted)."""
+        return self._has_status(202)
+
     def has_status_no_content(self):
         """Assert that the response has HTTP status code 204 (No content)."""
         return self._has_status(204)
@@ -485,9 +489,25 @@ class Assert:
         """Assert that the response has HTTP status code 405 (Method not allowed)."""
         return self._has_status(405)
 
+    def has_status_conflict(self):
+        """Assert that the response has HTTP status code 409 (Conflict)."""
+        return self._has_status(409)
+
     def has_status_precondition_failed(self):
         """Assert that the response has HTTP status code 412 (Precondition failed)."""
         return self._has_status(412)
+
+    def has_status_internal_server_error(self):
+        """Assert that the response has HTTP status code 412 (Internal server error)."""
+        return self._has_status(500)
+
+    def has_status_service_unavailable(self):
+        """Assert that the response has HTTP status code 503 (Service unavailable)."""
+        return self._has_status(503)
+
+    def has_status_gateway_timeout(self):
+        """Assert that the response has HTTP status code 504 (Gateway timeout)."""
+        return self._has_status(504)
 
     def _has_status(self, expected: int):
         msg = "Expected HTTP status {} but was {}".format(expected, self.value.status_code)

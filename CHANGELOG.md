@@ -2,7 +2,8 @@
 
 This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
-## Unreleased
+## [1.3.0] - 2019-06-12
+- More `has_status` methods for HTTP status codes
 
 ## [1.2.0] - 2019-06-11
 ### Added
