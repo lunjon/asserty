@@ -350,11 +350,11 @@ class Assert:
     has_key_with_value = contains_key_with_value
     has_key_and_value = contains_key_with_value
 
-    def contains_subset(self, subset: Iterable):
+    def contains_subset(self, subset: set):
         """Assert that this contains the given sub-set.
 
         Args:
-            subset (Iterable): the collection that is expected to exist in this
+            subset (set): the collection that is expected to exist in this
         """
         msg = "Expected {} to contain the subset {}".format(self.value, subset)
         self.is_iterable()
@@ -375,11 +375,11 @@ class Assert:
 
     has_subset = contains_subset
 
-    def is_subset_of(self, superset: Iterable):
+    def is_subset_of(self, superset: set):
         """Assert that this is a sub-set of the given super-set.
 
         Args:
-            superset (Iterable): the collection that is expected to be a super-set of this
+            superset (set): the collection that is expected to be a super-set of this
         """
         msg = "Expected {} to contain the sub-set {}".format(superset, self.value)
         self.is_iterable()
@@ -568,20 +568,3 @@ class Assert:
         assert_contains(self.value.json(), key, msg)
         assert_equal(self.value.json()[key], value, msg)
         return self
-
-    def body_contains_subset(self, subset: Iterable):
-        """Assert that the response body contains the given sub-set.
-
-        Args:
-            subset (Iterable): the sub-set which is expected in this body
-        """
-        msg = "Expected body {} to contain sub-set {}".format(self.value.json(), subset)
-        assert_iterable(subset)
-
-        if not isinstance(subset, set):
-            subset = set(subset)
-
-        if subset.issubset(self.value.json()):
-            return self
-        else:
-            fail(msg)

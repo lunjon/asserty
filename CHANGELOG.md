@@ -2,6 +2,8 @@
 
 This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
+## [1.4.0] - 2019-06-19
+
 ## [1.3.0] - 2019-06-12
 - More `has_status` methods for HTTP status codes
 
@@ -13,7 +15,8 @@ This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.htm
 ### Added
 - `has_length_greater*`
 - `has_length_less*`
-- methods `subset` for asserting sub-sets
+- methods `
+subset` for asserting sub-sets
 
 ### Fixed
 - Docstring from `has_length*` methods
