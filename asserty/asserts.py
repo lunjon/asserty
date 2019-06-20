@@ -96,90 +96,177 @@ class Assert:
     def __init__(self, value):
         self.value = value
 
-    @property
-    def also(self):
-        """Make further assertions on this with AND between them."""
-        return self
-
-    and_do = also
-    and_is = also
-    and_that = also
-
     def is_none(self):
-        """Assert that this has a value of None."""
+        """Assert that this has a value of None.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> def echo(arg): return arg
+            >>> assert_that(echo(None)).is_none()
+        """
         msg = "Expected {} to be None".format(self.value)
         assert_none(self.value, msg)
 
     def is_not_none(self):
-        """Assert that this DO NOT has a value of None."""
+        """Assert that this DO NOT has a value of None.
+        
+        Examples:
+            >>> from asserty import assert_that, version
+            >>> assert_that(version).is_not_none()
+        """
         msg = "Expected {} to be None".format(self.value)
         assert_not_none(self.value, msg)
 
-    def equals(self, other):
-        """Assert that if this object is equal to the other object."""
+    def equals(self, other: object):
+        """Assert that if this object is equal to the other object.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that("HELLO".lower()).equals("hello")
+        """
         msg = "Expected {} to equal".format(self.value, other)
         assert_equal(self.value, other, msg)
-        return self
 
-    def not_equals(self, other):
-        """Check that if this object DO NOT equal to the other object."""
+    def not_equals(self, other: object):
+        """Check that if this object DO NOT equal to the other object.
+        
+        Args:
+            other (object): the other object which this value is expected NOT to equal.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that("HELLO").not_equals("hello")
+        """
         msg = "Expected {} not to equal".format(self.value, other)
         assert_not_equal(self.value, other, msg)
-        return self
 
-    def has_type(self, expected):
-        """Assert that this has the expected type."""
+    def has_type(self, expected: type):
+        """Assert that this has the expected type.
+        
+        Args:
+            expected (type, object): the expected type of this value. If expected is
+                not a type, type(expected) will be used.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that("str").has_type(str)
+            >>> assert_that("str").has_type("string")
+        """
         if not isinstance(expected, type):
             expected = type(expected)
         msg = "Expected {} to have type {} but was {}" \
             .format(self.value, type(self.value), expected)
         assert_type(self.value, expected, msg)
-        return self
 
     has_same_type_as = has_type
     is_instance = has_type
     is_instance_type = has_type
 
-    def not_has_type(self, expected):
-        """Assert that this NOT have the expected type."""
+    def not_has_type(self, expected: type):
+        """Assert that this NOT have the expected type.
+        
+        Args:
+            expected (type, object): the type to not exppect of this value. If expected is
+                not a type, type(expected) will be used.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that("str").not_has_type(int)
+            >>> assert_that("str").not_has_type(1)
+        """
         if not isinstance(expected, type):
             expected = type(expected)
         msg = "Expected {} not to have type {} but was".format(self.value, expected)
         assert_not_type(self.value, expected, msg)
-        return self
 
     not_has_same_type_as = not_has_type
     not_is_instance = not_has_type
     not_is_instance_type = not_has_type
 
     def is_in(self, coll: Iterable):
-        """Assert that this is in the given collection."""
+        """Assert that this is in the given collection.
+        
+        Args:
+            coll (Iterable): the collection which this value is expected to be found in.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that(1).is_in([1,2,3]) # list
+            >>> assert_that("key").is_in({"key": "value"}) # dict
+            >>> assert_that("a").is_in("asserty") # string
+        """
         msg = "Expected {} to be in {} but was not".format(self.value, coll)
         assert_contains(coll, self.value, msg)
-        return self
 
     def is_not_in(self, coll: Iterable):
-        """Assert that this is NOT in the given collection."""
+        """Assert that this is NOT in the given collection.
+        
+        Args:
+            coll (Iterable): the collection which this value is NOT expected to be in.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that(-1).is_not_in([1,2,3]) # list
+            >>> assert_that("keys").is_not_in({"key": "value"}) # dict
+            >>> assert_that("EEE").is_not_in("asserty") # string
+        """
         msg = "Expected {} not to be in {} but was".format(self.value, coll)
         assert_not_contains(coll, self.value, msg)
-        return self
 
-    def has_length(self, expected):
-        """Assert that this is of the expected length."""
-        if hasattr(expected, "__len__"):
+    def has_length(self, expected: int):
+        """Assert that this is of the expected length.
+        
+        Args:
+            expected (int): the expected length of this value.
+        
+        Raises:
+            TypeError: if expected is not an int or misses __len__ attribute.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that([]).has_length(0)
+            >>> assert_that([1,2,3]).has_length([4,5,6])
+            >>> assert_that("str").has_length(3)
+        """
+        if not hasattr(self.value, "__len__"):
+            raise TypeError("value being asserted is missing __len__ attribute")
+
+        if isinstance(expected, int):
+            pass
+        elif hasattr(expected, "__len__"):
             expected = len(expected)
+        else:
+            raise TypeError("expected value isn't an integer or is missing __len__ attribute")
         msg = "Expected {} to have length {} but was {}" \
             .format(self.value, expected, len(self.value))
         assert_equal(len(self.value), expected, msg)
-        return self
 
-    def not_has_length(self, expected):
-        """Assert that this is NOT of the expected length."""
-        if hasattr(expected, "__len__"):
+    def not_has_length(self, expected: int):
+        """Assert that this is NOT of the expected length.
+        
+        Args:
+            expected (int): the length that this value is not expected to have.
+        
+        Raises:
+            TypeError: if expected is not an int or misses __len__ attribute.
+        
+        Examples:
+            >>> from asserty import assert_that
+            >>> assert_that([]).not_has_length(1)
+            >>> assert_that([1,2,3]).not_has_length([4,5])
+            >>> assert_that("str").not_has_length(4)
+        """
+        if not hasattr(self.value, "__len__"):
+            raise TypeError("value being asserted is missing __len__ attribute")
+
+        if isinstance(expected, int):
+            pass
+        elif hasattr(expected, "__len__"):
             expected = len(expected)
+        else:
+            raise TypeError("expected value isn't an integer or is missing __len__ attribute")
         msg = "Expected {} to have length {} but was".format(self.value, expected)
         assert_not_equal(len(self.value), expected, msg)
-        return self
 
     def has_length_greater_than(self, expected: int):
         """Assert that the length is greater than the given value."""
@@ -189,7 +276,6 @@ class Assert:
         msg = "Expected {} to have length greater than {} but was {}" \
             .format(self.value, expected, len(self.value))
         assert_greater_than(len(self.value), expected, msg)
-        return self
 
     def has_length_greater_or_equal_to(self, expected):
         """Assert that the length is greater or equal to the given value."""
@@ -198,7 +284,6 @@ class Assert:
         msg = "Expected {} to have length greater or equal to {} but was {}" \
             .format(self.value, expected, len(self.value))
         assert_greater_equal_to(len(self.value), expected, msg)
-        return self
 
     def has_length_less_than(self, expected):
         """Assert that the length is less than the given value."""
@@ -206,7 +291,6 @@ class Assert:
             expected = len(expected)
         msg = "Expected {} to have length less than {} but was".format(self.value, expected)
         assert_less_than(len(self.value), expected, msg)
-        return self
 
     def has_length_less_or_equal_to(self, expected):
         """Assert that the length is less or equal to the given value."""
@@ -214,31 +298,26 @@ class Assert:
             expected = len(expected)
         msg = "Expected {} to have length less or equal to {} but was".format(self.value, expected)
         assert_less_equal_to(len(self.value), expected, msg)
-        return self
 
     def is_greater_than(self, other):
         """Assert that this is greater than other."""
         msg = "Expected {} to be greater than {}".format(self.value, other)
         assert_greater_than(self.value, other, msg)
-        return self
 
     def is_greater_or_equal_to(self, other):
         """Assert that this is greater or equal to the other."""
         msg = "Expected {} to be greater or equal to {}".format(self.value, other)
         assert_greater_equal_to(self.value, other, msg)
-        return self
 
     def is_less_than(self, other):
         """Assert that this is less than other."""
         msg = "Expected {} to be less than {}".format(self.value, other)
         assert_less_than(self.value, other, msg)
-        return self
 
     def is_less_or_equal_to(self, other):
         """Assert that this is less or equal to the other."""
         msg = "Expected {} to be less or equal to {}".format(self.value, other)
         assert_less_equal_to(self.value, other, msg)
-        return self
 
     def has_attribute(self, name):
         """Assert that this has an attribute with the given name.
@@ -251,7 +330,6 @@ class Assert:
             hasattr(self.value, name)
         except AttributeError:
             raise AssertionError(msg)
-        return self
 
     def has_attribute_with_value(self, name, value):
         """Assert that this has an attribute with the given name and
@@ -270,7 +348,6 @@ class Assert:
         assert_equal(self.value.__getattribute__(name), value,
                      msg="Expected {} to have an attribute named {} with value {}"
                      .format(self.value, name, value))
-        return self
 
     # Bool Assertions
 
@@ -296,7 +373,6 @@ class Assert:
         """Assert that this contain the given object."""
         msg = "Expected {} to contain {}".format(self.value, obj)
         assert_contains(self.value, obj, msg)
-        return self
 
     def not_contains(self, obj):
         """Assert that this DO NOT contain the given object.
@@ -306,7 +382,6 @@ class Assert:
         """
         msg = "Expected {} not to contain {}".format(self.value, obj)
         assert_not_contains(self.value, obj, msg)
-        return self
 
     def contains_key(self, key: str):
         """Assert that this contains the given key.
@@ -318,7 +393,6 @@ class Assert:
             raise TypeError("value has no keys")
         msg = "Expected {} to contain key {}".format(self.value, key)
         assert_contains(self.value, key, msg)
-        return self
 
     def not_contains_key(self, key):
         """Assert that this DO NOT contains the given key.
@@ -330,7 +404,6 @@ class Assert:
             raise TypeError("value has no keys")
         msg = "Expected {} not to contain key {}".format(self.value, key)
         assert_not_contains(self.value, key, msg)
-        return self
 
     def contains_key_with_value(self, key: str, value: Any):
         """Assert that this contains the given key and value.
@@ -345,7 +418,6 @@ class Assert:
         assert_contains(self.value, key, msg)
         msg = "Expected {} to have value {} for key {}".format(self.value, value, key)
         assert_equal(self.value[key], value, msg)
-        return self
 
     has_key_with_value = contains_key_with_value
     has_key_and_value = contains_key_with_value
@@ -368,9 +440,7 @@ class Assert:
         if not isinstance(subset, set):
             subset = set(subset)
 
-        if subset.issubset(superset):
-            return self
-        else:
+        if not subset.issubset(superset):
             fail(msg)
 
     has_subset = contains_subset
@@ -393,9 +463,7 @@ class Assert:
         if not isinstance(superset, set):
             superset = set(superset)
 
-        if subset.issubset(superset):
-            return self
-        else:
+        if not subset.issubset(superset):
             fail(msg)
 
     def has_same_elements_as(self, other: Iterable):
@@ -404,7 +472,6 @@ class Assert:
         self.is_iterable()
         assert_iterable(other)
         assert_equal(sorted(self.value), sorted(other), msg)
-        return self
 
     # Callable assertions
 
@@ -415,7 +482,6 @@ class Assert:
             raise TypeError("object asserted is not callable")
         self.args = []
         self.kwargs = {}
-        return self
 
     if_called = when_called
 
@@ -425,7 +491,6 @@ class Assert:
             raise TypeError("object asserted is not callable")
         self.args = args
         self.kwargs = kwargs
-        return self
 
     if_called_with = when_called_with
 
@@ -445,13 +510,11 @@ class Assert:
         """Assert that the response has a successful HTTP status code."""
         msg = "Expected successful HTTP status code but was {}".format(self.value.status_code)
         assert_less_than(self.value.status_code, 400, msg)
-        return self
 
     def has_status_failed(self):
         """Assert that the response has a failed HTTP status code."""
         msg = "Expected failed HTTP status code but was {}".format(self.value.status_code)
         assert_greater_equal_to(self.value.status_code, 400, msg)
-        return self
 
     def has_status_ok(self):
         """Assert that the response has HTTP status code 200 (OK)."""
@@ -517,7 +580,6 @@ class Assert:
             raise AssertionError("{} does not have any 'status_code' attribute")
 
         assert_equal(self.value.status_code, expected, msg)
-        return self
 
     def body_length(self, length: int):
         """Assert that the response body has the given length. 
@@ -527,7 +589,6 @@ class Assert:
         """
         msg = "Expected body {} to have length {}".format(self.value.json(), length)
         assert_equal(len(self.value.json()), length, msg)
-        return self
 
     def body_equals(self, obj: Union[dict, str]):
         """Assert that the response has a body equal to other_body.
@@ -544,7 +605,6 @@ class Assert:
 
         msg = "Expected body {} to equal {}".format(my_body, obj)
         assert_equal(my_body, obj, msg)
-        return self
 
     def body_contains_key(self, key: str):
         """Assert that the response body contains the given key.
@@ -554,7 +614,6 @@ class Assert:
         """
         msg = "Expected body {} to contain key {}".format(self.value.json(), key)
         assert_contains(self.value.json(), key, msg)
-        return self
 
     def body_contains_key_with_value(self, key: str, value: Any):
         """Assert that the response body contains the given key and value.
@@ -567,4 +626,3 @@ class Assert:
             .format(self.value.json(), key, value)
         assert_contains(self.value.json(), key, msg)
         assert_equal(self.value.json()[key], value, msg)
-        return self
