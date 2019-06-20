@@ -1,4 +1,4 @@
-from pytest import mark
+from pytest import mark, fail
 from asserty import assert_that
 
 
@@ -98,7 +98,30 @@ def test_body_contains_key():
     assert_that(res).body_contains_key_with_value("a", 1)
 
 
-def test_status_and_body():
-    res = MockResponse(200, {"a": 1})
-    assert_that(res).has_status_ok().also.body_contains_key("a")
-    assert_that(res).has_status_ok().and_that.body_contains_key("a")
+@mark.parametrize("body,subset", [
+    ({"a": 1}, {}),
+    ({"a": 1}, {"a": 1}),
+    ({"a": 1, "b": {"c": 2}}, {"b": {"c": 2}}),
+    ([{"name": "John"}], []),
+    ([{"name": "John"}], [{}]),
+    ([{"name": "John"}], [{"name": "John"}]),
+])
+def test_body_contains_subset(body, subset):
+    res = MockResponse(200, body)
+    assert_that(res).body_contains_subset(subset)
+
+
+@mark.parametrize("body,subset", [
+    ({"a": 1}, {"b": 2}),
+    ({"a": 1, "b": {"c": 2}}, {"b": 2}),
+    ({"a": 1, "b": {"c": 2}}, {"b": {"c": 12}}),
+    ([{"name": "John"}], [{"name": "Doe"}]),
+])
+def test_body_contains_subset_failing(body, subset):
+    """Test that the assertion fails for these parameters."""
+    res = MockResponse(200, body)
+    try:
+        assert_that(res).body_contains_subset(subset)
+        fail()
+    except AssertionError:
+        pass

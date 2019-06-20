@@ -3,7 +3,7 @@ from asserty import assert_that
 
 def test_readme_examples():
     assert_that("str").not_equals("string")
-    assert_that(5).is_in(range(10)).also.is_less_than(8)
+    assert_that(5).is_in(range(10))
 
     def func(arg):
         if not isinstance(arg, str):

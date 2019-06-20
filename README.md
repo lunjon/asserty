@@ -21,7 +21,7 @@ You make assertions by importing the `assert_that` function from the `asserty` p
 from asserty import assert_that
 
 assert_that("str").not_equals("string")
-assert_that(5).is_in(range(10)).also.is_less_than(8)
+assert_that(5).is_in(range(10))
 
 def myfunc(arg):
     if not isinstance(arg, str):
@@ -38,5 +38,5 @@ Outside a test context that does not handle `AssertionError` you can import the 
 from asserty import that
 
 assert that("str").not_equals("string")
-assert that(5).is_in(range(10)).also.is_less_than(8)
+assert that(5).is_in(range(10))
 ```

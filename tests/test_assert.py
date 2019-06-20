@@ -20,24 +20,16 @@ def test_equals_with_same_class():
     class Tmp:
         def __init__(self, var):
             self.var = var
+        def __eq__(self, other):
+            return self.var == other.var
+
     t1 = Tmp(1)
     t2 = Tmp(2)
+    t3 = Tmp(1)
     assert_that(t1).equals(t1)
+    assert_that(t1).equals(t3)
     assert_that(t1).not_equals(t2)
-
-
-def test_equals_with_different_class():
-    class Class1:
-        def __init__(self, var):
-            self.var = var
-            
-    class Class2:
-        def __init__(self, var):
-            self.var = var
-    
-    c1 = Class1(1)
-    c2 = Class2(2)
-    assert assert_that(c1).not_equals(c2)
+    assert_that(t3).not_equals(t2)
 
 
 def test_equals_with_list():
@@ -65,11 +57,6 @@ def test_has_type_on_str():
     assert_that("str").not_has_type(int)
     assert_that("str").not_has_same_type_as(int)
 
-
-def test_also():
-    assert_that("str").equals("str").also.not_equals("string")
-    assert_that("str").has_length(3).also.contains("s")
-    
 
 def test_is_in():
     assert_that(1).is_in(range(10))

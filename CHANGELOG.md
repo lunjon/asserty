@@ -2,6 +2,13 @@
 
 This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
+## Unreleased
+### Fixed
+- Docstring examples
+
+### Removed
+- `also` from Assert class
+
 ## [1.4.0] - 2019-06-19
 
 ## [1.3.0] - 2019-06-12

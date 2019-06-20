@@ -1,3 +1,4 @@
+from pytest import mark, fail
 from asserty import assert_that
 
 
@@ -53,36 +54,122 @@ def test_not_contains():
 def test_contains_key():
     assert_that({"a": 1}).contains_key("a")
     assert_that({"a": 1}).not_contains_key("b")
-
+    
 
 def test_contains_key_with_value():
     assert_that({"a": 1}).contains_key_with_value("a", 1)
-    
 
-def test_contains_subset():
-    # list
-    assert_that([1, 2, 3]).contains_subset([1])
-    assert_that([1, 2, 3]).contains_subset([1])
-    assert_that([1, 2, 3]).contains_subset([1, 2, 3])
-    
-    # dict
-    assert_that({"a": 1, "b": 2}).contains_subset({"b": 2})
-    assert_that({"a": 1, "b": 2}).contains_subset({"a": 1, "b": 2})
-    
-    # set
-    assert_that({1, 2, 3, 4}).contains_subset({3})
-    
-    # mixed types
-    assert_that({1, 2, 3}).contains_subset([1, 2])
-    
 
-def test_is_subset_of():
-    # list
-    assert_that([1, 3]).is_subset_of([1, 2, 3, 4])
-    assert_that([1, 2, 3]).is_subset_of([1, 2, 3])
+@mark.parametrize("superset,subset", [
+    ([1, 2, 3], []),
+    ([1, 2, 3], [2]),
+    ([1, 2, 3], [1, 2 ,3]),
     
-    # dict
-    assert_that({"a": 1}).is_subset_of({"a": 1, "b": 2})
+    ({1, 2, 3, 4}, [1, 2]),
+])
+def test_contains_subset(superset, subset):
+    assert_that(superset).contains_subset(subset)
+
+
+@mark.parametrize("subset", [
+    {},
+    {"b": { "c": 2}},
+    {"d": []},
+    {"d": [{"e":3}]},
+])
+def test_contains_subset_recursive_passing(subset):
+    superset = {
+        "a": 1,
+        "b": {
+            "c": 2
+        },
+        "d": [
+            {"e": 3}
+        ]
+    }
+    assert_that(superset).contains_subset(subset, recursive=True)
+
+
+@mark.parametrize("subset", [
+    {"b": { "c": 10}},   # wrong value
+    {"d": [1]},          # wrong value
+    {"d": [{"e": 4}]}    # wrong value
+])
+def test_contains_subset_recursive_failing(subset):
+    superset = {
+        "a": 1,
+        "b": {
+            "c": 2
+        },
+        "d": [
+            {"e": 3}
+        ]
+    }
+    try:
+        assert_that(superset).contains_subset(subset, recursive=True)
+        fail()
+    except AssertionError:
+        pass
+        
+    
+@mark.parametrize("subset,superset", [
+    ([1, 3], [1, 2, 3, 4]),
+    ([], [1, 2, 3, 4]),
+])
+def test_is_subset_of(subset, superset):
+    assert_that(subset).is_subset_of(superset)
+        
+    
+@mark.parametrize("subset,superset", [
+    ({"a": 1}, {
+        "a": 1,
+        "b": {
+            "c": 2
+        },
+        "d": [
+            {"e": 3}
+        ]
+    }),
+    ({"d": []}, {
+        "a": 1,
+        "b": {
+            "c": 2
+        },
+        "d": [
+            {"e": 3}
+        ]
+    })
+])
+def test_is_subset_of_recursive_passing(subset, superset):
+    assert_that(subset).is_subset_of(superset, recursive=True)
+        
+    
+@mark.parametrize("subset,superset", [
+    ({"a": 2}, {
+        "a": 1,
+        "b": {
+            "c": 2
+        },
+        "d": [
+            {"e": 3}
+        ]
+    }),
+    ({"d": [1]}, {
+        "a": 1,
+        "b": {
+            "c": 2
+        },
+        "d": [
+            {"e": 3}
+        ]
+    })
+])
+def test_is_subset_of_recursive_failing(subset, superset):
+    try:
+        assert_that(subset).is_subset_of(superset, recursive=True)
+        fail()
+    except AssertionError:
+        pass
 
 
 def test_has_same_elements_as():
