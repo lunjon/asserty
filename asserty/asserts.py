@@ -228,9 +228,6 @@ class Assert:
             >>> assert_that([1,2,3]).has_length([4,5,6])
             >>> assert_that("str").has_length(3)
         """
-        if not hasattr(self.value, "__len__"):
-            raise TypeError("value being asserted is missing __len__ attribute")
-
         if isinstance(expected, int):
             pass
         elif hasattr(expected, "__len__"):
@@ -256,9 +253,6 @@ class Assert:
             >>> assert_that([1,2,3]).not_has_length([4,5])
             >>> assert_that("str").not_has_length(4)
         """
-        if not hasattr(self.value, "__len__"):
-            raise TypeError("value being asserted is missing __len__ attribute")
-
         if isinstance(expected, int):
             pass
         elif hasattr(expected, "__len__"):
