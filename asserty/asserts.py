@@ -109,10 +109,15 @@ def is_subset(super_container, sub_container):
             is_subset(super_container[key], sub_container[key])
     elif types == list or types == set:
         assert len(sub_container) <= len(super_container)
-        super_sorted = sorted(super_container)
-        sub_sorted = sorted(sub_container)
-        for i in range(len(sub_sorted)):
-            is_subset(super_sorted[i], sub_sorted[i])
+        
+        for sub_item in sub_container:
+            ok = False
+            for super_item in list(filter(lambda si: type(si) == type(sub_item), super_container)):
+                is_subset(super_item, sub_item)
+                ok = True
+                break
+            if not ok:
+                raise AssertionError
     else:
         assert super_container == sub_container
 

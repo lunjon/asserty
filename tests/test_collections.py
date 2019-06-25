@@ -75,7 +75,7 @@ def test_contains_subset(superset, subset):
     {},
     {"b": { "c": 2}},
     {"d": []},
-    {"d": [{"e":3}]},
+    {"d": [{"e":3}, 5]},
 ])
 def test_contains_subset_recursive_passing(subset):
     superset = {
@@ -84,7 +84,11 @@ def test_contains_subset_recursive_passing(subset):
             "c": 2
         },
         "d": [
-            {"e": 3}
+            {"e": 3},
+            {"f": 4},
+            5,
+            6,
+            "string"
         ]
     }
     assert_that(superset).contains_subset(subset, recursive=True)
@@ -174,4 +178,5 @@ def test_is_subset_of_recursive_failing(subset, superset):
 
 def test_has_same_elements_as():
     assert_that([1,2,3]).has_same_elements_as([2,1,3])
-
+    assert_that("gnirts").has_same_elements_as("string")
+    
