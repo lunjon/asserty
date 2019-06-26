@@ -1,5 +1,5 @@
 from unittest import TestCase
-from typing import Any, Union, Iterable
+from typing import Any, Union, Iterable, List
 
 tc = TestCase("__init__")
 
@@ -154,7 +154,7 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that("HELLO".lower()).equals("hello")
         """
-        msg = "Expected {} to equal".format(self.value, other)
+        msg = f"Expected {self.value} to equal {other}"
         assert_equal(self.value, other, msg)
 
     def not_equals(self, other: object):
@@ -167,7 +167,7 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that("HELLO").not_equals("hello")
         """
-        msg = "Expected {} not to equal".format(self.value, other)
+        msg = f"Expected {self.value} not to equal {other}"
         assert_not_equal(self.value, other, msg)
 
     def has_type(self, expected: Union[type, object]):
@@ -184,8 +184,7 @@ class Assert:
         """
         if not isinstance(expected, type):
             expected = type(expected)
-        msg = "Expected {} to have type {} but was {}" \
-            .format(self.value, type(self.value), expected)
+        msg = f"Expected {self.value} to have type {expected} but was {type(self.value)}"
         assert_type(self.value, expected, msg)
 
     has_same_type_as = has_type
@@ -206,7 +205,7 @@ class Assert:
         """
         if not isinstance(expected, type):
             expected = type(expected)
-        msg = "Expected {} not to have type {} but was".format(self.value, expected)
+        msg = f"Expected {self.value} not to have type {expected} but was"
         assert_not_type(self.value, expected, msg)
 
     not_has_same_type_as = not_has_type
@@ -243,11 +242,11 @@ class Assert:
         msg = "Expected {} not to be in {} but was".format(self.value, coll)
         assert_not_contains(coll, self.value, msg)
 
-    def has_length(self, expected: int):
+    def has_length(self, expected: Union[int, List[Any]]):
         """Assert that this is of the expected length.
         
         Args:
-            expected (int): the expected length of this value.
+            expected (Union[int, List[Any]]): the expected length of this value.
         
         Raises:
             TypeError: if expected is not an int or misses __len__ attribute.
@@ -261,11 +260,11 @@ class Assert:
         msg = f"Expected {self.value} to have length {expected} but was {len(self.value)}"
         self._assert_length(expected, assert_equal, msg)
 
-    def not_has_length(self, expected: int):
+    def not_has_length(self, expected: Union[int, List[Any]]):
         """Assert that this is NOT of the expected length.
         
         Args:
-            expected (int): the length that this value is not expected to have.
+            expected (Union[int, List[Any]]): the length that this value is not expected to have.
         
         Raises:
             TypeError: if expected is not an int or misses __len__ attribute.
@@ -337,7 +336,7 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that(10).is_greater_than(9)
         """
-        msg = "Expected {} to be greater than {}".format(self.value, other)
+        msg = f"Expected {self.value} to be greater than {other}"
         assert_greater_than(self.value, other, msg)
 
     def is_greater_or_equal_to(self, other):
@@ -347,7 +346,7 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that(10).is_greater_or_equal_to(9)
         """
-        msg = "Expected {} to be greater or equal to {}".format(self.value, other)
+        msg = f"Expected {self.value} to be greater or equal to {other}"
         assert_greater_equal_to(self.value, other, msg)
 
     def is_less_than(self, other):
@@ -357,7 +356,7 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that(10).is_less_than(12)
         """
-        msg = "Expected {} to be less than {}".format(self.value, other)
+        msg = f"Expected {self.value} to be less than {other}"
         assert_less_than(self.value, other, msg)
 
     def is_less_or_equal_to(self, other):
@@ -367,7 +366,7 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that(10).is_less_or_equal_to(11)
         """
-        msg = "Expected {} to be less or equal to {}".format(self.value, other)
+        msg = f"Expected {self.value} to be less or equal to {other}"
         assert_less_equal_to(self.value, other, msg)
 
     def has_attribute(self, name: str):
@@ -380,7 +379,7 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).has_attribute("__len__")
         """
-        msg = "Expected {} to have an attribute named {}".format(self.value, name)
+        msg = f"Expected {self.value} to have an attribute named {name}"
         try:
             hasattr(self.value, name)
         except AttributeError:
@@ -431,7 +430,7 @@ class Assert:
             ...
             AssertionError: Expected 1 to be an iterable
         """
-        msg = "Expected {} to be an iterable".format(self.value)
+        msg = f"Expected {self.value} to be an iterable"
         assert_iterable(self.value, msg)
 
     def contains(self, obj):
@@ -443,7 +442,7 @@ class Assert:
             >>> assert_that("Cookies").contains("ok")
             >>> assert_that({"a": 1}).contains("a")
         """
-        msg = "Expected {} to contain {}".format(self.value, obj)
+        msg = f"Expected {self.value} to contain {obj}"
         assert_contains(self.value, obj, msg)
 
     def not_contains(self, obj):
@@ -458,7 +457,7 @@ class Assert:
             >>> assert_that("Cookies").not_contains("sky")
             >>> assert_that({}).not_contains("sky")
         """
-        msg = "Expected {} not to contain {}".format(self.value, obj)
+        msg = f"Expected {self.value} not to contain {obj}"
         assert_not_contains(self.value, obj, msg)
 
     def contains_key(self, key: str):
@@ -478,7 +477,7 @@ class Assert:
         """
         if not hasattr(self.value, "__contains__"):
             raise TypeError("value has no keys")
-        msg = "Expected {} to contain key {}".format(self.value, key)
+        msg = f"Expected {self.value} to contain key {key}"
         assert_contains(self.value, key, msg)
 
     def not_contains_key(self, key):
@@ -494,7 +493,7 @@ class Assert:
         """
         if not hasattr(self.value, "__contains__"):
             raise TypeError("value has no keys")
-        msg = "Expected {} not to contain key {}".format(self.value, key)
+        msg = f"Expected {self.value} not to contain key {key}"
         assert_not_contains(self.value, key, msg)
 
     def contains_key_with_value(self, key: str, value: object):
@@ -510,9 +509,9 @@ class Assert:
         """
         if not hasattr(self.value, "__contains__"):
             raise TypeError("value has no keys")
-        msg = "Expected {} to contain key {}".format(self.value, key)
+        msg = f"Expected {self.value} to contain key {key}"
         assert_contains(self.value, key, msg)
-        msg = "Expected {} to have value {} for key {}".format(self.value, value, key)
+        msg = f"Expected {self.value} to have value {value} for key {key}"
         assert_equal(self.value[key], value, msg)
 
     has_key_with_value = contains_key_with_value

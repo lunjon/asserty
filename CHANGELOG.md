@@ -4,6 +4,10 @@ This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.htm
 
 ## Unreleased
 
+## [2.0.2] - 2019-06-26
+### Fixed
+- Docstrings in `Assert` missing complete failure message
+
 ## [2.0.1] - 2019-06-25
 ### Fixed
 - `Assert.contains_subset` failed for lists with multiple values
