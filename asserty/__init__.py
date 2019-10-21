@@ -1,15 +1,17 @@
 """asserty can be used to make assertions on object and works best in test contexts.
 
-Import 'assert_that' (or 'that' if outside a context that handles AssertionError's) from asserty to make assertion.
+Import 'assert_that' (or 'that' if outside a context that handles AssertionError)
+from asserty to make assertion.
 
 Examples:
-    >>> from asserty import that
+    >>> from asserty import that, assert_that
     >>> assert that("Google".lower()).equals("google")
+    >>> assert_that([1, 2, 3]).not_contains("a")
 """
 from .asserts import Assert
 from .expected_error import  expected_error
 
-version = "2.0.3"
+version = "3.0.0"
 name = "asserty"
 
 

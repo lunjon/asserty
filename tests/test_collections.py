@@ -70,51 +70,6 @@ def test_contains_key_with_value():
 def test_contains_subset(superset, subset):
     assert_that(superset).contains_subset(subset)
 
-
-@mark.parametrize("subset", [
-    {},
-    {"b": { "c": 2}},
-    {"d": []},
-    {"d": [{"e":3}, 5]},
-])
-def test_contains_subset_recursive_passing(subset):
-    superset = {
-        "a": 1,
-        "b": {
-            "c": 2
-        },
-        "d": [
-            {"e": 3},
-            {"f": 4},
-            5,
-            6,
-            "string"
-        ]
-    }
-    assert_that(superset).contains_subset(subset, recursive=True)
-
-
-@mark.parametrize("subset", [
-    {"b": { "c": 10}},   # wrong value
-    {"d": [1]},          # wrong value
-    {"d": [{"e": 4}]}    # wrong value
-])
-def test_contains_subset_recursive_failing(subset):
-    superset = {
-        "a": 1,
-        "b": {
-            "c": 2
-        },
-        "d": [
-            {"e": 3}
-        ]
-    }
-    try:
-        assert_that(superset).contains_subset(subset, recursive=True)
-        fail()
-    except AssertionError:
-        pass
-        
     
 @mark.parametrize("subset,superset", [
     ([1, 3], [1, 2, 3, 4]),
@@ -123,58 +78,6 @@ def test_contains_subset_recursive_failing(subset):
 def test_is_subset_of(subset, superset):
     assert_that(subset).is_subset_of(superset)
         
-    
-@mark.parametrize("subset,superset", [
-    ({"a": 1}, {
-        "a": 1,
-        "b": {
-            "c": 2
-        },
-        "d": [
-            {"e": 3}
-        ]
-    }),
-    ({"d": []}, {
-        "a": 1,
-        "b": {
-            "c": 2
-        },
-        "d": [
-            {"e": 3}
-        ]
-    })
-])
-def test_is_subset_of_recursive_passing(subset, superset):
-    assert_that(subset).is_subset_of(superset, recursive=True)
-        
-    
-@mark.parametrize("subset,superset", [
-    ({"a": 2}, {
-        "a": 1,
-        "b": {
-            "c": 2
-        },
-        "d": [
-            {"e": 3}
-        ]
-    }),
-    ({"d": [1]}, {
-        "a": 1,
-        "b": {
-            "c": 2
-        },
-        "d": [
-            {"e": 3}
-        ]
-    })
-])
-def test_is_subset_of_recursive_failing(subset, superset):
-    try:
-        assert_that(subset).is_subset_of(superset, recursive=True)
-        fail()
-    except AssertionError:
-        pass
-
 
 def test_has_same_elements_as():
     assert_that([1,2,3]).has_same_elements_as([2,1,3])

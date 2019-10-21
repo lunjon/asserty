@@ -1,7 +1,12 @@
 from unittest import TestCase
-from typing import Any, Union, Iterable, List
+from typing import (
+    Any,
+    Union,
+    Iterable,
+    List,
+)
 
-tc = TestCase("__init__")
+tc = TestCase()
 
 
 def assert_true(obj, msg: str = ""):
@@ -90,47 +95,6 @@ def assert_contains(coll: Iterable, obj: object, msg=""):
 def assert_not_contains(coll, obj, msg=""):
     """Assert that coll NOT contains the given object."""
     tc.assertNotIn(obj, coll, msg)
-
-
-def is_subset(super_container, sub_container):
-    """Used to assert subsets recursively."""
-    t1 = type(super_container)
-    t2 = type(sub_container)
-    assert t1 == t2
-
-    types = t1
-    if t1 == dict:
-        # Check that all keys of sub_container is in super_container
-        super_keys_set = set(super_container.keys())
-        sub_keys_set = set(sub_container.keys())
-        if sub_keys_set.issubset(super_keys_set):
-            # Assert the values
-            for key in sub_keys_set:
-                is_subset(super_container[key], sub_container[key])
-            return
-        
-        # The item was not found in the root, continue down
-        for key in super_container:
-            try:
-                is_subset(super_container[key], sub_container)
-                return
-            except AssertionError:
-                continue
-        raise AssertionError
-            
-    elif types == list or types == set:
-        assert len(sub_container) <= len(super_container)
-        
-        for sub_item in sub_container:
-            ok = False
-            for super_item in list(filter(lambda si: type(si) == type(sub_item), super_container)):
-                is_subset(super_item, sub_item)
-                ok = True
-                break
-            if not ok:
-                raise AssertionError
-    else:
-        assert super_container == sub_container
 
 
 class Assert:
@@ -528,37 +492,26 @@ class Assert:
     has_key_with_value = contains_key_with_value
     has_key_and_value = contains_key_with_value
 
-    def contains_subset(self, subset: Union[dict, list, set], **kwargs):
+    def contains_subset(self, subset: Union[dict, list, set]):
         """Assert that this contains the given sub-set.
         
-        This can be used on dict, list and set types and works recursively (if used correctly).
-        It can be used to assert that, for instance, a dict is contained in another dict in the sense
-        that the super-set has all the keys of the subs-set at the correct structure as well as the
-        values for the matching keys. See examples on how to use it.
-
         Args:
-            subset (Union[dict, list, set]): the collection that is expected to exist in this
-            **kwargs:
-                recursive (bool): whether to check the subset recursively
+            subset (Union[list, set]): the collection that is expected to exist in this
         
         Example:
             >>> from asserty import assert_that
             >>> assert_that({1, 2, 3}).contains_subset({1}) # Regular sets
             >>> assert_that([1, 2, 3]).contains_subset([1, 2]) # Works with lists as well
-            >>> superset = {"a": 1, "b": {"c": 2}} # Lets test recursive
-            >>> subset = {"b": {"c": 2}}           # A sub-set of the dict defined above
-            >>> assert_that(superset).contains_subset(subset, recursive=True)
-            >>> subset = {"b": {"c": 3}}           # Change value
-            >>> assert_that(superset).contains_subset(subset, recursive=True)
+            >>> assert_that([1, 2, 3]).contains_subset([4, 5, 6])
             Traceback (most recent call last):
             ...
-            AssertionError: Expected {'a': 1, 'b': {'c': 2}} to contain the sub-set {'b': {'c': 3}}
+            AssertionError
         """
-        self._assert_subset(self.value, subset, **kwargs)
+        self._assert_subset(self.value, subset)
 
     has_subset = contains_subset
 
-    def is_subset_of(self, superset: Union[dict, list, set], **kwargs):
+    def is_subset_of(self, superset: Union[list, set]):
         """Assert that this is a sub-set of the given super-set.
 
         Args:
@@ -568,36 +521,24 @@ class Assert:
             >>> from asserty import assert_that
             >>> assert_that({1}).is_subset_of({1, 2, 3}) # Regular sets
             >>> assert_that([2]).is_subset_of([1, 2, 3]) # Works with lists as well
-            >>> superset = {"a": 1, "b": {"c": 2}} # Lets test recursive
-            >>> subset = {"b": {"c": 2}}           # A sub-set of the dict defined above
-            >>> assert_that(subset).is_subset_of(superset, recursive=True)
-            >>> subset = {"b": {"c": 3}}           # Change value
-            >>> assert_that(subset).is_subset_of(superset, recursive=True)
+            >>> assert_that([1, 2, 3]).is_subset_of([4, 5, 6])
             Traceback (most recent call last):
             ...
-            AssertionError: Expected {'a': 1, 'b': {'c': 2}} to contain the sub-set {'b': {'c': 3}}
+            AssertionError
         """
-        self._assert_subset(superset, self.value, **kwargs)
+        self._assert_subset(superset, self.value)
 
     @staticmethod
-    def _assert_subset(superset: Union[dict, list, set], subset: Union[dict, list, set], **kwargs):
+    def _assert_subset(superset: Union[list, set], subset: Union[list, set]):
         msg = f"Expected {superset} to contain the sub-set {subset}"
-        assert_iterable(superset)
-        assert_iterable(subset)
 
-        if "recursive" in kwargs and kwargs["recursive"]:
-            try:
-                is_subset(superset, subset)
-            except AssertionError:
-                raise AssertionError(msg)
-        else:  # Do not assert complex structures recursively.
-            if not isinstance(superset, set):
-                superset = set(superset)
+        if not isinstance(superset, set):
+            superset = set(superset)
 
-            if not isinstance(subset, set):
-                subset = set(subset)
+        if not isinstance(subset, set):
+            subset = set(subset)
 
-            assert subset.issubset(superset), msg
+        assert subset.issubset(superset), msg
 
     def has_same_elements_as(self, other: Iterable):
         """Assert that this and the other collection has the same elements.
@@ -791,6 +732,8 @@ class Assert:
         """
         msg = "Expected body {} to have length {}".format(self.value.json(), length)
         assert_equal(len(self.value.json()), length, msg)
+    
+    body_has_length = body_length
 
     def body_equals(self, obj: Union[dict, str]):
         """Assert that the response has a body equal to other_body.
@@ -827,13 +770,3 @@ class Assert:
         msg = f"Expected body {self.value.json()} to contain key {key} with value {value}"
         assert_contains(self.value.json(), key, msg)
         assert_equal(self.value.json()[key], value, msg)
-
-    def body_contains_subset(self, subset: Union[list, dict]):
-        """Assert that the response body contains the given dict as a sub-set.
-
-        Args:
-            key (dict): a dict that is expected as a structure within this body
-        """
-        body = self.value.json()
-        msg = f"Expected body {body} to contain sub-set {subset}"
-        self._assert_subset(body, subset, recursive=True)

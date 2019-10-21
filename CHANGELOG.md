@@ -4,6 +4,11 @@ This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.htm
 
 ## Unreleased
 
+## [3.0.0] - 2019-10-22
+### Removed
+- Recursive mode in `contains_subset`. The implementation was to general and error prone.
+  Until a stable function can be provided, it should not be a part of the API. 
+
 ## [2.0.3] - 2019-10-21
 ### Fixed
 - Expected type of `Assert.body_contains_subset`
