@@ -1,7 +1,6 @@
 test:
 	pytest -v tests
 
-
 dist:
 	python3 setup.py sdist bdist_wheel
 
@@ -9,4 +8,8 @@ publish:
 	python3 -m twine upload dist/*
 
 clean:
-	find . ( -name __pycache__ -o -name .pytest_cache ) -exec -rm -r {} +
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	rm -rf asserty.egg-info build dist
+	
+.PHONY: clean dist publish test
