@@ -99,14 +99,25 @@ def is_subset(super_container, sub_container):
     assert t1 == t2
 
     types = t1
-    if types == dict:
+    if t1 == dict:
         # Check that all keys of sub_container is in super_container
         super_keys_set = set(super_container.keys())
         sub_keys_set = set(sub_container.keys())
-        assert sub_keys_set.issubset(super_keys_set)
-        # Assert the values
-        for key in sub_keys_set:
-            is_subset(super_container[key], sub_container[key])
+        if sub_keys_set.issubset(super_keys_set):
+            # Assert the values
+            for key in sub_keys_set:
+                is_subset(super_container[key], sub_container[key])
+            return
+        
+        # The item was not found in the root, continue down
+        for key in super_container:
+            try:
+                is_subset(super_container[key], sub_container)
+                return
+            except AssertionError:
+                continue
+        raise AssertionError
+            
     elif types == list or types == set:
         assert len(sub_container) <= len(super_container)
         
@@ -523,7 +534,7 @@ class Assert:
         This can be used on dict, list and set types and works recursively (if used correctly).
         It can be used to assert that, for instance, a dict is contained in another dict in the sense
         that the super-set has all the keys of the subs-set at the correct structure as well as the
-        values for the matching keys. See examples for a demo how it works.
+        values for the matching keys. See examples on how to use it.
 
         Args:
             subset (Union[dict, list, set]): the collection that is expected to exist in this
@@ -817,7 +828,7 @@ class Assert:
         assert_contains(self.value.json(), key, msg)
         assert_equal(self.value.json()[key], value, msg)
 
-    def body_contains_subset(self, subset: dict):
+    def body_contains_subset(self, subset: Union[list, dict]):
         """Assert that the response body contains the given dict as a sub-set.
 
         Args:

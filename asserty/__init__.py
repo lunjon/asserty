@@ -5,12 +5,11 @@ Import 'assert_that' (or 'that' if outside a context that handles AssertionError
 Examples:
     >>> from asserty import that
     >>> assert that("Google".lower()).equals("google")
-
 """
 from .asserts import Assert
 from .expected_error import  expected_error
 
-version = "2.0.2"
+version = "2.0.3"
 name = "asserty"
 
 
