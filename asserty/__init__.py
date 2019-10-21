@@ -9,7 +9,7 @@ Examples:
 from .asserts import Assert
 from .expected_error import  expected_error
 
-version = "2.0.3"
+version = "2.0.4"
 name = "asserty"
 
 

@@ -3,6 +3,10 @@
 This package uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html)
 
 ## Unreleased
+### Removed
+- The dangerous function called `contains_subset` with recursive mode.
+  The implementation is was to general and error prone.
+  Until a stable function can be provided, it should be a part of the API. 
 
 ## [2.0.3] - 2019-10-21
 ### Fixed
