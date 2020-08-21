@@ -12,4 +12,3 @@ def test_expect_error_wrong_given_type():
             1 / 0
     except ZeroDivisionError:
         pass
-    

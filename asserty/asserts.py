@@ -98,12 +98,13 @@ def assert_not_contains(coll, obj, msg=""):
 
 
 class Assert:
+
     def __init__(self, value):
         self.value = value
 
     def is_none(self):
         """Assert that this has a value of None.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> def echo(arg): return arg
@@ -114,7 +115,7 @@ class Assert:
 
     def is_not_none(self):
         """Assert that this DO NOT has a value of None.
-        
+
         Examples:
             >>> from asserty import assert_that, version
             >>> assert_that(version).is_not_none()
@@ -124,7 +125,7 @@ class Assert:
 
     def equals(self, other: object):
         """Assert that if this object is equal to the other object.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that("HELLO".lower()).equals("hello")
@@ -134,10 +135,10 @@ class Assert:
 
     def not_equals(self, other: object):
         """Check that if this object DO NOT equal to the other object.
-        
+
         Args:
             other (object): the other object which this value is expected NOT to equal.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that("HELLO").not_equals("hello")
@@ -147,11 +148,11 @@ class Assert:
 
     def has_type(self, expected: Union[type, object]):
         """Assert that this has the expected type.
-        
+
         Args:
             expected (type, object): the expected type of this value. If expected is
                 not a type, type(expected) will be used.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that("str").has_type(str)
@@ -168,11 +169,11 @@ class Assert:
 
     def not_has_type(self, expected: type):
         """Assert that this NOT have the expected type.
-        
+
         Args:
             expected (type, object): the type to not exppect of this value. If expected is
                 not a type, type(expected) will be used.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that("str").not_has_type(int)
@@ -189,10 +190,10 @@ class Assert:
 
     def is_in(self, coll: Iterable):
         """Assert that this is in the given collection.
-        
+
         Args:
             coll (Iterable): the collection which this value is expected to be found in.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that(1).is_in([1,2,3]) # list
@@ -204,10 +205,10 @@ class Assert:
 
     def is_not_in(self, coll: Iterable):
         """Assert that this is NOT in the given collection.
-        
+
         Args:
             coll (Iterable): the collection which this value is NOT expected to be in.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that(-1).is_not_in([1,2,3]) # list
@@ -219,13 +220,13 @@ class Assert:
 
     def has_length(self, expected: Union[int, List[Any]]):
         """Assert that this is of the expected length.
-        
+
         Args:
             expected (Union[int, List[Any]]): the expected length of this value.
-        
+
         Raises:
             TypeError: if expected is not an int or misses __len__ attribute.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([]).has_length(0)
@@ -237,13 +238,13 @@ class Assert:
 
     def not_has_length(self, expected: Union[int, List[Any]]):
         """Assert that this is NOT of the expected length.
-        
+
         Args:
             expected (Union[int, List[Any]]): the length that this value is not expected to have.
-        
+
         Raises:
             TypeError: if expected is not an int or misses __len__ attribute.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([]).not_has_length(1)
@@ -255,7 +256,7 @@ class Assert:
 
     def has_length_greater_than(self, expected: Union[int, Iterable]):
         """Assert that the length is greater than the given value.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).has_length_greater_than(2)
@@ -265,7 +266,7 @@ class Assert:
 
     def has_length_greater_or_equal_to(self, expected: Union[int, Iterable]):
         """Assert that the length is greater or equal to the given value.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).has_length_greater_or_equal_to(3)
@@ -275,7 +276,7 @@ class Assert:
 
     def has_length_less_than(self, expected: Union[int, Iterable]):
         """Assert that the length is less than the given value.
-        
+
          Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).has_length_less_than(5)
@@ -285,14 +286,14 @@ class Assert:
 
     def has_length_less_or_equal_to(self, expected: Union[int, Iterable]):
         """Assert that the length is less or equal to the given value.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).has_length_less_or_equal_to(3)
         """
         msg = f"Expected {self.value} to have length less or equal to {expected} but was {len(self.value)}"
         self._assert_length(expected, assert_less_equal_to, msg)
-    
+
     def _assert_length(self, expected: Union[int, Iterable], operator: callable, msg):
         if isinstance(expected, int):
             pass
@@ -300,13 +301,13 @@ class Assert:
             expected = len(expected)
         else:
             raise TypeError("expected value isn't an integer or is missing __len__ attribute")
-        
+
         self.has_attribute("__len__")
         operator(len(self.value), expected, msg)
 
     def is_greater_than(self, other):
         """Assert that this is greater than other.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that(10).is_greater_than(9)
@@ -316,7 +317,7 @@ class Assert:
 
     def is_greater_or_equal_to(self, other):
         """Assert that this is greater or equal to the other.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that(10).is_greater_or_equal_to(9)
@@ -326,7 +327,7 @@ class Assert:
 
     def is_less_than(self, other):
         """Assert that this is less than other.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that(10).is_less_than(12)
@@ -349,7 +350,7 @@ class Assert:
 
         Args:
             name (str): the name of the attribute
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).has_attribute("__len__")
@@ -366,7 +367,7 @@ class Assert:
         Args:
             name (str): the name of the attribute
             value (object): the value of the attribute
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> class X: pos = (1, 2)
@@ -396,7 +397,7 @@ class Assert:
 
     def is_iterable(self):
         """Assert that this object is an iterable.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).is_iterable()
@@ -410,7 +411,7 @@ class Assert:
 
     def contains(self, obj):
         """Assert that this contain the given object.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).contains(1)
@@ -425,7 +426,7 @@ class Assert:
 
         Args:
             obj (object): the object to check for in this value
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that([1, 2, 3]).not_contains(4)
@@ -440,7 +441,7 @@ class Assert:
 
         Args:
             key (str): the key to check for in this dictionary
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that({"a": 1}).contains_key("a")
@@ -448,7 +449,7 @@ class Assert:
             Traceback (most recent call last):
             ...
             AssertionError: 'a' not found in {} : Expected {} to contain key a
-            
+
         """
         if not hasattr(self.value, "__contains__"):
             raise TypeError("value has no keys")
@@ -460,7 +461,7 @@ class Assert:
 
         Args:
             key (str): the key to check that it does not exist in this collection
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that({"a": 1}).not_contains_key("b")
@@ -477,7 +478,7 @@ class Assert:
         Args:
             key (str): the key to check for in this collection
             value (Any): the value to expect for the given key value
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> assert_that({"a": 1}).contains_key_with_value("a", 1)
@@ -494,10 +495,10 @@ class Assert:
 
     def contains_subset(self, subset: Union[dict, list, set]):
         """Assert that this contains the given sub-set.
-        
+
         Args:
             subset (Union[list, set]): the collection that is expected to exist in this
-        
+
         Example:
             >>> from asserty import assert_that
             >>> assert_that({1, 2, 3}).contains_subset({1}) # Regular sets
@@ -516,7 +517,7 @@ class Assert:
 
         Args:
             superset (set): the collection that is expected to be a super-set of this
-        
+
         Example:
             >>> from asserty import assert_that
             >>> assert_that({1}).is_subset_of({1, 2, 3}) # Regular sets
@@ -542,10 +543,10 @@ class Assert:
 
     def has_same_elements_as(self, other: Iterable):
         """Assert that this and the other collection has the same elements.
-        
+
         Args:
             other (Iterable): other iterable to check the elements against
-        
+
         Example:
             >>> from asserty import assert_that
             >>> assert_that([1, 3, 2, 4]).has_same_elements_as([1, 2, 3, 4])
@@ -562,7 +563,7 @@ class Assert:
     @property
     def when_called(self):
         """Assert if called without arguments.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> def fun(): return "Fun"
@@ -582,7 +583,7 @@ class Assert:
 
     def when_called_with(self, *args, **kwargs):
         """Assert if called with the given arguments. Used with 'returns' or 'raises'.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> def pow(x: int): return x*x
@@ -602,7 +603,7 @@ class Assert:
 
     def raises(self, err: type):
         """Assert if called that the given error is raised.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> def doom(x: int): return x / 0
@@ -612,7 +613,7 @@ class Assert:
 
     def returns(self, expected):
         """Assert if called that the given result is returned.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> def pow(x: int): return x*x
@@ -626,7 +627,7 @@ class Assert:
 
     def has_status_successful(self):
         """Assert that the response has a successful HTTP status code.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> import requests
@@ -638,7 +639,7 @@ class Assert:
 
     def has_status_failed(self):
         """Assert that the response has a failed HTTP status code.
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> import requests
@@ -650,7 +651,7 @@ class Assert:
 
     def has_status_ok(self):
         """Assert that the response has HTTP status code 200 (OK).
-        
+
         Examples:
             >>> from asserty import assert_that
             >>> import requests
@@ -714,12 +715,12 @@ class Assert:
     def _has_status(self, expected: int):
         for attr in ["status_code", "status", "statuscode"]:
             status = getattr(self.value, attr, 0)
-            if status !=0:
+            if status != 0:
                 break
 
         if status == 0:
             raise TypeError("{} does not have any status code attribute")
-        
+
         msg = "Expected HTTP status {} but was {}".format(expected, self.value.status_code)
 
         assert_equal(status, expected, msg)
@@ -732,7 +733,7 @@ class Assert:
         """
         msg = "Expected body {} to have length {}".format(self.value.json(), length)
         assert_equal(len(self.value.json()), length, msg)
-    
+
     body_has_length = body_length
 
     def body_equals(self, obj: Union[dict, str]):

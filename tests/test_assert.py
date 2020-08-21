@@ -17,9 +17,12 @@ def test_equals_float():
 
 
 def test_equals_with_same_class():
+
     class Tmp:
+
         def __init__(self, var):
             self.var = var
+
         def __eq__(self, other):
             return self.var == other.var
 
@@ -40,10 +43,10 @@ def test_equals_with_list():
 
 
 def test_equals_with_dict():
-    a = {"a":1}
-    b = {"a":1}
+    a = {"a": 1}
+    b = {"a": 1}
     assert_that(a).equals(b)
-    assert_that(a).not_equals({"c":2})
+    assert_that(a).not_equals({"c": 2})
 
 
 def test_is_none():
@@ -61,13 +64,13 @@ def test_has_type_on_str():
 def test_is_in():
     assert_that(1).is_in(range(10))
     assert_that(10).is_not_in(range(10))
-    
+
 
 def test_greater():
     assert_that(1).is_greater_than(0)
     assert_that(1).is_greater_or_equal_to(0)
     assert_that(1).is_greater_or_equal_to(1)
-    
+
 
 def test_less():
     assert_that(1).is_less_than(2)
@@ -77,14 +80,17 @@ def test_less():
 
 def test_has_attribute():
     assert_that("str").has_attribute("__str__")
-    
+
     class MyClass:
         name = "MyClass"
+
     assert_that("str").has_attribute("__str__")
     assert_that(MyClass()).has_attribute("name")
 
 
 def test_has_attribute_with_value():
+
     class MyClass:
         name = "MyClass"
+
     assert_that(MyClass()).has_attribute_with_value("name", "MyClass")

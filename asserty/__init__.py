@@ -9,7 +9,7 @@ Examples:
     >>> assert_that([1, 2, 3]).not_contains("a")
 """
 from .asserts import Assert
-from .expected_error import  expected_error
+from .expected_error import expected_error
 
 version = "3.0.0"
 name = "asserty"

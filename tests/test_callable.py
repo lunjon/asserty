@@ -2,18 +2,23 @@ from asserty import assert_that
 
 
 def test_when_called_returns():
+
     def razor():
         return 1
+
     assert_that(razor).when_called.returns(1)
 
 
 def test_when_called_raises():
+
     def razor():
         raise TypeError()
+
     assert_that(razor).when_called.raises(TypeError)
 
 
 def test_when_called_with_returns():
+
     def razor(int_arg):
         return int_arg * 2
 
@@ -21,6 +26,7 @@ def test_when_called_with_returns():
 
 
 def test_when_called_with_raises():
+
     def razor(arg):
         if not isinstance(arg, str):
             raise TypeError()
@@ -35,6 +41,7 @@ def test_when_called_with_raises():
 
 
 def test_callable_example():
+
     def func(arg):
         if not isinstance(arg, str):
             raise TypeError()
